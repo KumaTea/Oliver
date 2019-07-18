@@ -1,0 +1,5 @@
+.pytest_cache
+.idea
+__pycache__
+token_weather.txt
+bot_token.txt
