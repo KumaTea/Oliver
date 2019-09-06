@@ -2,14 +2,10 @@ import requests
 from tgapi import tools
 
 Guangzhou_code = 1809858
+Zhuhai_code = 2052479
 weather_token = tools.read_file('token_weather', 'base64')
 current_api = 'https://api.openweathermap.org/data/2.5/weather'
 forecast_api = 'https://api.openweathermap.org/data/2.5/forecast'
-weather_data = {
-    'appid': weather_token,
-    'id': Guangzhou_code,
-    'lang': 'zh_cn'
-}
 
 weather_id = {'maybe': [210, 211, 212, 311, 312, 313, 314, 321, 502, 503, 504],
               'must': [221, 230, 231, 232, 511, 520, 521, 522, 531],
@@ -17,6 +13,11 @@ weather_id = {'maybe': [210, 211, 212, 311, 312, 313, 314, 321, 502, 503, 504],
 
 
 def check_current(item='code'):
+    weather_data = {
+        'appid': weather_token,
+        'id': Guangzhou_code,
+        'lang': 'zh_cn'
+    }
     result = requests.get(current_api, params=weather_data).json()
     if 'code' in item:
         return result['weather'][0]['id']
@@ -24,7 +25,15 @@ def check_current(item='code'):
         return result['weather'][0]['description']
 
 
-def check_forecast(duration=12):
+def check_forecast(location=Guangzhou_code, duration=12):
+    weather_data = {
+        'appid': weather_token,
+        'lang': 'zh_cn'
+    }
+    if type(location) == int:
+        weather_data['id'] = location
+    else:
+        weather_data['q'] = location
     length = int(int(duration)/3)
     result = requests.get(forecast_api, params=weather_data).json()
     compare = {
@@ -41,7 +50,6 @@ def check_forecast(duration=12):
     description = max(set(compare['description']), key=compare['description'].count)
 
     return temp, temp_max, description
-
 
 
 def weather_status():

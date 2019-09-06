@@ -25,5 +25,5 @@ def set_proxy(ip='127.0.0.1', port='1080', protocol='http'):
 
 def starting():
     mkdir()
-    set_proxy(port='1080')
+    set_proxy(port='10080')
     print('Starting fine.')
