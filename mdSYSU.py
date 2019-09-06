@@ -1,7 +1,7 @@
 import subprocess
 import mdWeather
 from botSession import kuma
-import token_db
+import localDB
 import random
 
 SYSU = ['中山大学', '中大', '中带', '双鸭山', '鸭大', '鸭鸭山', '双倍多多鸭', ]
@@ -35,16 +35,18 @@ def send_flood():
     else:
         flood_msg = '今天中大没有淹水'
 
-    kuma.send(token_db.chat['ooxx']).text(flood_msg)
+    kuma.send(localDB.chat['ooxx']).text(flood_msg)
     return True
 
 
 def send_greetings():
-    temp, temp_max, weather_desc = mdWeather.check_forecast()
+    g_temp, g_temp_max, g_weather_desc = mdWeather.check_forecast()
+    z_temp, z_temp_max, z_weather_desc = mdWeather.check_forecast(2052479)
     grt_msg = f'各位{random.choice(SYSU)}的{random.choice(student)}早上好！\n' \
-              f'今日{weather_desc}，{temp}~{temp_max}度。\n\n' \
+              f'今日广州{g_weather_desc}，{g_temp}~{g_temp_max}度；\n' \
+              f'今日珠海{z_weather_desc}，{z_temp}~{z_temp_max}度。\n\n' \
               f'{random.choice(greet_msg)}，，，'
 
-    kuma.send(token_db.chat['sbddy']).text(grt_msg)
-    kuma.send(token_db.chat['sbddy']).sticker(random.choice(greet_sticker))
+    kuma.send(localDB.chat['sbddy']).text(grt_msg)
+    kuma.send(localDB.chat['sbddy']).sticker(random.choice(greet_sticker))
     return True
