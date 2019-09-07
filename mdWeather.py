@@ -1,21 +1,27 @@
 import requests
 from tgapi import tools
+from datetime import datetime
+import re
 
-Guangzhou_code = 1809858
-Zhuhai_code = 2052479
+
 weather_token = tools.read_file('token_weather', 'base64')
 current_api = 'https://api.openweathermap.org/data/2.5/weather'
-forecast_api = 'https://api.openweathermap.org/data/2.5/forecast'
+forecast_api = 'http://t.weather.sojson.com/api/weather/city/'
+lunar_api = 'https://www.sojson.com/open/api/lunar/json.shtml'
 
 weather_id = {'maybe': [210, 211, 212, 311, 312, 313, 314, 321, 502, 503, 504],
               'must': [221, 230, 231, 232, 511, 520, 521, 522, 531],
               }
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/76.0.3809.132 Safari/537.36',
+}
 
 
 def check_current(item='code'):
     weather_data = {
         'appid': weather_token,
-        'id': Guangzhou_code,
+        'q': 'Guangzhou',
         'lang': 'zh_cn'
     }
     result = requests.get(current_api, params=weather_data).json()
@@ -25,31 +31,19 @@ def check_current(item='code'):
         return result['weather'][0]['description']
 
 
-def check_forecast(location=Guangzhou_code, duration=12):
-    weather_data = {
-        'appid': weather_token,
-        'lang': 'zh_cn'
-    }
-    if type(location) == int:
-        weather_data['id'] = location
-    else:
-        weather_data['q'] = location
-    length = int(int(duration)/3)
-    result = requests.get(forecast_api, params=weather_data).json()
-    compare = {
-        'temp': [],
-        'temp_max': [],
-        'description': [],
-    }
-    for i in range(length):
-        compare['temp'].append(int(result['list'][i]['main']['temp']-273.15))
-        compare['temp_max'].append(int(result['list'][i]['main']['temp_max']-273.15))
-        compare['description'].append(result['list'][i]['weather'][0]['description'])
-    temp = min(compare['temp'])
-    temp_max = max(compare['temp_max'])
-    description = max(set(compare['description']), key=compare['description'].count)
+def check_forecast(location):
+    result = requests.get(f'{forecast_api}{location}').json()
+    today = datetime.now().strftime('%d')
+    index = 0
+    for i in range(len(result['data']['forecast'])):
+        if result['data']['forecast'][i]['date'] == today:
+            index = i
+            break
+    low = re.sub(r'\D', '', result['data']['forecast'][index]['low'])
+    high = re.sub(r'\D', '', result['data']['forecast'][index]['high'])
+    description = result['data']['forecast'][index]['type']
 
-    return temp, temp_max, description
+    return low, high, description
 
 
 def weather_status():
@@ -60,3 +54,17 @@ def weather_status():
         return 1
     else:
         return -1
+
+
+def check_lunar():
+    date_str = str(int(datetime.now().strftime('%d')))
+    result = requests.get(lunar_api, headers=headers).json()
+    month = result['data']['cnmonth']
+    day = result['data']['cnday']
+    term = result['data']['jieqi'].get(date_str, '')
+
+    return month, day, term
+
+
+def check_date():
+    return int(datetime.now().strftime('%m')), int(datetime.now().strftime('%d')), datetime.weekday(datetime.now())
