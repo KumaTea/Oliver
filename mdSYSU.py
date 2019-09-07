@@ -66,6 +66,6 @@ def send_greetings():
               f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n' \
               f'{random.choice(greet_msg)}，，，'
 
-    kuma.send(localDB.chat['me']).text(grt_msg)
-    kuma.send(localDB.chat['me']).sticker(random.choice(greet_sticker))
+    kuma.send(localDB.chat['sbddy']).text(grt_msg)
+    kuma.send(localDB.chat['sbddy']).sticker(random.choice(greet_sticker))
     return True
