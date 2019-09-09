@@ -2,7 +2,7 @@ import json
 import time
 
 
-def create_vote(options, output='id'):
+def create_vote(options, output='reply_markup'):
     vote_time = int(time.time())
     vote_id = f'vote{vote_time}'
     if type(options) == tuple:

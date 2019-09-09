@@ -60,7 +60,7 @@ def send_greetings():
     month, day, weekday = mdWeather.check_date()
     lunar_month, lunar_day, lunar_term = mdWeather.check_lunar()
     grt_msg = f'各位{random.choice(SYSU)}的{random.choice(student)}早上好！' \
-              f'今天是{month}月{day}日{dow_cn[weekday]}，农历{lunar_month}月{lunar_day}{lunar_term}。\n' \
+              f'今天是{month}月{day}日星期{dow_cn[weekday]}，农历{lunar_month}月{lunar_day}{lunar_term}。\n' \
               f'广州{g_weather_desc}，{g_temp}~{g_temp_max}度；' \
               f'珠海{z_weather_desc}，{z_temp}~{z_temp_max}度；' \
               f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n' \
