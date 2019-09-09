@@ -4,6 +4,8 @@ import os
 def mkdir(folder=None):
     if not os.path.exists('tmp'):
         os.mkdir('tmp')
+    if not os.path.exists('tum'):
+        os.mkdir('tum')
     if not os.path.exists('../vote'):
         os.mkdir('../vote')
     if folder:
