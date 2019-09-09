@@ -1,5 +1,5 @@
 ﻿import requests
-from botSession import kuma
+from botSession import kuma, task_done
 import localDB
 
 
@@ -37,3 +37,4 @@ with open('local_lol_ver.txt', 'r') as ver:
 
 def task_check():
     send_notify(check_kw(lol_url, version, True), f'{lol_url}\n{str(float(version) - 0.01)}')
+    task_done('checkUrl')
