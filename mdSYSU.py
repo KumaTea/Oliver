@@ -1,6 +1,6 @@
 import subprocess
 import mdWeather
-from botSession import kuma
+from botSession import kuma, task_done
 import localDB
 import random
 
@@ -50,6 +50,7 @@ def send_flood():
         flood_msg = '今天中大没有淹水'
 
     kuma.send(localDB.chat['ooxx']).text(flood_msg)
+    task_done('checkFlood')
     return True
 
 
@@ -68,4 +69,5 @@ def send_greetings():
 
     kuma.send(localDB.chat['sbddy']).text(grt_msg)
     kuma.send(localDB.chat['sbddy']).sticker(random.choice(greet_sticker))
+    task_done('greetings')
     return True

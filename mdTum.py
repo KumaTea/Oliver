@@ -5,7 +5,7 @@ import json
 import re
 import pickle
 import localDB
-from botSession import dra
+from botSession import dra, task_done
 from voteGenerator import create_vote
 
 
@@ -78,13 +78,13 @@ def init_ret_posts():
         for item in tum_posts['posts']:
             if item['type'] == 'photo':
                 posts_db[index] = process_photo(item, index)
-                print('Processed: ', item['id'], ' at ', item['date'])
+                # print('Processed: ', item['id'], ' at ', item['date'])
             elif item['type'] == 'text':
                 posts_db[index] = process_text(item, index)
-                print('Processed: ', item['id'], ' at ', item['date'])
+                # print('Processed: ', item['id'], ' at ', item['date'])
             else:
                 posts_db[index] = json.dumps(item)
-                print('Unknown type: ', item['type'], '\n', json.dumps(item))
+                # print('Unknown type: ', item['type'], '\n', json.dumps(item))
 
             index -= 1
 
@@ -141,6 +141,7 @@ def sync_posts():
     with open('tum/posts.p', 'wb') as file:
         pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
 
+    task_done('sync')
     return True
 
 
@@ -175,10 +176,10 @@ def send_post():
     msg = md_msg.replace('([', '(').replace(')]', ')')
     vote = create_vote(['😍', '👍', '👎'])
     aa = dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote)
-    print(msg, '\n', aa)
 
     tum_db['info']['sent'] = to_send
     with open('tum/posts.p', 'wb') as file:
         pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
 
+    task_done('send post')
     return True
