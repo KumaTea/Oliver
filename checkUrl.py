@@ -5,17 +5,17 @@ import localDB
 
 def check_kw(url, keyword, exists=True):
     resp = requests.get(url).text
-    kw_exist = resp.find(keyword)
-    if exists:
-        if kw_exist == -1:
-            return False
+    keyword = list(keyword)
+    for item in keyword:
+        kw_exist = resp.find(item)
+        if exists:
+            if not kw_exist == -1:
+                return True
         else:
-            return True
-    else:
-        if kw_exist == -1:
-            return True
-        else:
-            return False
+            if kw_exist == -1:
+                return True
+
+    return False
 
 
 def send_notify(result, url=None):
@@ -25,16 +25,20 @@ def send_notify(result, url=None):
     if result:
         global version
         kuma.send(localDB.chat['me']).message(msg)
-        version = str(float(version) + 0.01)
+        for item in range(len(version)):
+            version[item] = str(float(version[item]) + 0.01)
+        version = '\n'.join(version)
         with open('local_lol_ver.txt', 'w') as new_ver:
             new_ver.write(version)
 
 
 lol_url = "http://lol.qq.com/download.shtml"
 with open('local_lol_ver.txt', 'r') as ver:
-    version = ver.read()
+    version = ver.read().split('\n')
+if '' in version:
+    version.remove('')
 
 
 def task_check():
-    send_notify(check_kw(lol_url, version, True), f'{lol_url}\n{str(float(version) - 0.01)}')
+    send_notify(check_kw(lol_url, version, True), f'{lol_url}\n{version[0]}')
     task_done('checkUrl')
