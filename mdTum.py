@@ -158,8 +158,7 @@ def send_post():
         to_send = tum_db['info']['sent'] + 1
         skip = True
         while skip:
-            if 'NSFW' in tum_db['posts'][to_send] or 'wallpaper' in tum_db['posts'][to_send] \
-                    or 'skip' in tum_db['posts'][to_send]:
+            if 'skip' in tum_db['posts'][to_send]['tags'] or 'wallpaper' in tum_db['posts'][to_send]['tags']:
                 to_send += 1
             else:
                 skip = False
@@ -172,9 +171,12 @@ def send_post():
         md_desc = re.sub(
             'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)
         post_desc = md_desc.replace('([', '(').replace(')]', ')')
+        tag = ''
+        if 'NSFW' in tum_db['posts'][to_send]['tags']:
+            tag = 'Tags: #NSFW\n'
         msg = f'Index: {to_send}\n' \
               f'Description: {post_desc}\n' \
-              f'Link: [click me]({post_link})'
+              f'{tag}Link: [click me]({post_link})'
         vote = create_vote(['😍', '👍', '👎'])
         dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote)
 
