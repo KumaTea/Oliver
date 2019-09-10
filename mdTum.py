@@ -154,32 +154,33 @@ def send_post():
         with open('tum/posts.p', 'rb') as file:
             tum_db = pickle.load(file)
 
-    to_send = tum_db['info']['sent'] + 1
-    skip = True
-    while skip:
-        if 'NSFW' in tum_db['posts'][to_send] or 'wallpaper' in tum_db['posts'][to_send] \
-                or 'skip' in tum_db['posts'][to_send]:
-            to_send += 1
-        else:
-            skip = False
+    if not tum_db['info']['sent'] == tum_db['info']['total']:
+        to_send = tum_db['info']['sent'] + 1
+        skip = True
+        while skip:
+            if 'NSFW' in tum_db['posts'][to_send] or 'wallpaper' in tum_db['posts'][to_send] \
+                    or 'skip' in tum_db['posts'][to_send]:
+                to_send += 1
+            else:
+                skip = False
 
-    for item in tum_db['posts'][to_send]['photo']:
-        dra.send(localDB.chat['st']).photo(item)
+        for item in tum_db['posts'][to_send]['photo']:
+            dra.send(localDB.chat['st']).photo(item)
 
-    post_desc = tum_db['posts'][to_send]['summary']
-    post_link = tum_db['posts'][to_send]['link']
-    msg = f'Index: {to_send}\n' \
-          f'Description: {post_desc}\n' \
-          f'Link: [click me]({post_link})'
-    md_msg = re.sub(
-        'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', msg)
-    msg = md_msg.replace('([', '(').replace(')]', ')')
-    vote = create_vote(['😍', '👍', '👎'])
-    aa = dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote)
+        post_desc = tum_db['posts'][to_send]['summary']
+        post_link = tum_db['posts'][to_send]['link']
+        md_desc = re.sub(
+            'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)
+        post_desc = md_desc.replace('([', '(').replace(')]', ')')
+        msg = f'Index: {to_send}\n' \
+              f'Description: {post_desc}\n' \
+              f'Link: [click me]({post_link})'
+        vote = create_vote(['😍', '👍', '👎'])
+        dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote)
 
-    tum_db['info']['sent'] = to_send
-    with open('tum/posts.p', 'wb') as file:
-        pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
+        tum_db['info']['sent'] = to_send
+        with open('tum/posts.p', 'wb') as file:
+            pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
 
     task_done('send post')
     return True
