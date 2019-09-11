@@ -1,4 +1,4 @@
-import subprocess
+from checkConnect import check_con
 import mdWeather
 from botSession import kuma, task_done
 import localDB
@@ -27,14 +27,18 @@ dow_cn = {
     6: '天',
 }
 
+urls = {
+    'google': 'www.google.com',
+    'tg': '2001:b28:f23f:f005::a',
+    'zhwp': 'zh.wikipedia.org',
+    'enwp': 'en.wikipedia.org',
+    'fb': 'www.facebook.com',
+    'twi': 'twitter.com',
+}
 
-def check_connection(url):
-    try:
-        subprocess.check_output(f'ping {url}')
-    except subprocess.CalledProcessError:
-        return False
 
-    return True
+def emoji(result):
+    return '✅' if result else '❌'
 
 
 # TASKS
@@ -70,4 +74,25 @@ def send_greetings():
     kuma.send(localDB.chat['sbddy']).text(grt_msg)
     kuma.send(localDB.chat['sbddy']).sticker(random.choice(greet_sticker))
     task_done('greetings')
+    return True
+
+
+def send_con():
+    month, day, weekday = mdWeather.check_date()
+    res_g_4 = emoji(check_con(urls['google'], '4'))
+    res_g_6 = emoji(check_con(urls['google'], '6'))
+    res_enwp = emoji(check_con(urls['enwp'], '4') or check_con(urls['enwp'], '6'))
+    res_zhwp = emoji(check_con(urls['zhwp'], '4') or check_con(urls['zhwp'], '6'))
+    res_fb = emoji(check_con(urls['fb'], '6'))
+    res_twi = emoji(check_con(urls['twi'], '6'))
+    res_tg = emoji(check_con(urls['tg']))
+    con_msg = f'中大校园网连通性报告\n' \
+              f'2019年{month}月{day}日\n\n' \
+              f'Google: v4 {res_g_4}  v6 {res_g_6}\n' \
+              f'Telegram: {res_tg}\n' \
+              f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
+              f'SNS: FB {res_fb}  Twi {res_twi}\n'
+
+    kuma.send(localDB.chat['sbddy']).message(con_msg)
+    task_done('net con')
     return True
