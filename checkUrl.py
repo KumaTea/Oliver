@@ -33,6 +33,7 @@ def send_notify(result, url=None):
 
 
 lol_url = "http://lol.qq.com/download.shtml"
+# lol_js = 'http://lol.qq.com/act/AutoCMS/publish/LOLWeb/OfficialWebsite/website_cfg.js'
 with open('local_lol_ver.txt', 'r') as ver:
     version = ver.read().split('\n')
 if '' in version:

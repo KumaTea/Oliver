@@ -34,6 +34,7 @@ urls = {
     'enwp': 'en.wikipedia.org',
     'fb': 'www.facebook.com',
     'twi': 'twitter.com',
+    'ins': 'www.instagram.com'
 }
 
 
@@ -83,15 +84,17 @@ def send_con():
     res_g_6 = emoji(check_con(urls['google'], '6'))
     res_enwp = emoji(check_con(urls['enwp'], '4') or check_con(urls['enwp'], '6'))
     res_zhwp = emoji(check_con(urls['zhwp'], '4') or check_con(urls['zhwp'], '6'))
-    res_fb = emoji(check_con(urls['fb'], '6'))
-    res_twi = emoji(check_con(urls['twi'], '6'))
+    res_fb = emoji(check_con(urls['fb'], '4') or check_con(urls['fb'], '6'))
+    res_twi = emoji(check_con(urls['twi'], '4') or check_con(urls['twi'], '6'))
+    res_ins = emoji(check_con(urls['ins'], '4') or check_con(urls['ins'], '6'))
     res_tg = emoji(check_con(urls['tg']))
     con_msg = f'中大校园网连通性报告\n' \
               f'2019年{month}月{day}日\n\n' \
               f'Google: v4 {res_g_4}  v6 {res_g_6}\n' \
               f'Telegram: {res_tg}\n' \
               f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
-              f'SNS: FB {res_fb}  Twi {res_twi}\n'
+              f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}\n' \
+              f'（注：技术限制，均为ping结果）'
 
     kuma.send(localDB.chat['sbddy']).message(con_msg)
     task_done('net con')
