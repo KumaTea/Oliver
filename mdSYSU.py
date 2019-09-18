@@ -87,7 +87,8 @@ def send_con():
     res_fb = emoji(check_con(urls['fb'], '4') or check_con(urls['fb'], '6'))
     res_twi = emoji(check_con(urls['twi'], '4') or check_con(urls['twi'], '6'))
     res_ins = emoji(check_con(urls['ins'], '4') or check_con(urls['ins'], '6'))
-    res_tg = emoji(check_con(urls['tg']))
+    tg_status = check_con(urls['tg'])
+    res_tg = emoji(tg_status)
     con_msg = f'中大校园网连通性报告\n' \
               f'2019年{month}月{day}日\n\n' \
               f'Google: v4 {res_g_4}  v6 {res_g_6}\n' \
@@ -97,5 +98,7 @@ def send_con():
               f'（注：技术限制，均为ping结果）'
 
     kuma.send(localDB.chat['sbddy']).message(con_msg)
+    if not tg_status:
+        kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
     task_done('net con')
     return True

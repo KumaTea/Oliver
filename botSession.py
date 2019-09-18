@@ -13,8 +13,6 @@ def task_done(task=None):
     day = current.strftime('%d')
     hour = current.strftime('%H')
     minute = current.strftime('%M')
-    if task:
-        msg = f'Task {task} done at {year}-{month}-{day} {hour}:{minute}.'
-    else:
-        msg = f'Task done at {year}-{month}-{day} {hour}:{minute}.'
+    task = (lambda p: f'{p} ' if p else '')(task)
+    msg = f'Task {task}done at {year}-{month}-{day} {hour}:{minute}.'
     print(msg)
