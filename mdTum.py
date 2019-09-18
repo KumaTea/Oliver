@@ -170,7 +170,7 @@ def send_post():
         post_link = tum_db['posts'][to_send]['link']
         md_desc = re.sub(
             'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)
-        post_desc = md_desc.replace('([', '(').replace(')]', ')')
+        post_desc = (lambda p: p if p else None)(md_desc.replace('([', '(').replace(')]', ')'))
         tag = ''
         if 'NSFW' in tum_db['posts'][to_send]['tags']:
             tag = 'Tags: #NSFW\n'
