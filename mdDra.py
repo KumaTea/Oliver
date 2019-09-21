@@ -10,10 +10,19 @@ import localDB
 dra_api = 'https://dragalialost.com/api/index.php'
 
 
-def send_news():
+def send_news(lang='zh'):
     sent = None
+    if 'zh' in lang:
+        lang = 'zh'
+    elif 'en' in lang:
+        lang = 'en'
+    elif 'ja' in lang:
+        lang = 'ja'
+    else:
+        lang = 'zh'
+
     try:
-        with open('dra/sent.txt', 'r') as file:
+        with open(f'dra/{lang}.txt', 'r') as file:
             sent = int(file.read())
     except FileNotFoundError:
         pass
@@ -26,6 +35,10 @@ def send_news():
         'lang': 'zh_cn',
         'priority_lower_than': '',
     }
+    if 'en' in lang:
+        params['lang'] = 'en_us'
+    elif 'ja' in lang:
+        params['lang'] = 'ja_jp'
     news_data = requests.get(dra_api, params=params).json()
 
     news_list = news_data['data']['category']['contents']
@@ -42,8 +55,12 @@ def send_news():
             article_id = news['article_id']
             priority = news['priority']
 
-            msg = f'【{cat}】  {date}\n' \
-                  f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+            if lang == 'zh':
+                msg = f'【{cat}】  {date}\n' \
+                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+            else:
+                msg = f'**{cat}**\n' \
+                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
 
             if priority > sent:
                 to_send.insert(0, msg)
@@ -62,8 +79,12 @@ def send_news():
                 article_id = news['article_id']
                 priority = news['priority']
 
-                msg = f'【{cat}】  {date}\n' \
-                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                if lang == 'zh':
+                    msg = f'【{cat}】  {date}\n' \
+                          f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                else:
+                    msg = f'**{cat}**\n' \
+                          f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
 
                 if priority > sent:
                     to_send.insert(0, msg)
@@ -77,17 +98,32 @@ def send_news():
             date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
             article_id = news['article_id']
 
-            msg = f'【{cat}】  {date}\n' \
-                  f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+            if lang == 'zh':
+                msg = f'【{cat}】  {date}\n' \
+                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+            else:
+                msg = f'**{cat}**\n' \
+                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
 
             to_send.insert(0, msg)
 
     if not to_send == []:
         for item in to_send:
-            dra.send(localDB.chat['me']).message(item, parse='Markdown', no_preview=True)
+            if 'zh' in lang:
+                dra.send(localDB.chat['dra_zh']).message(item, parse='Markdown', no_preview=True)
+            elif 'en' in lang:
+                dra.send(localDB.chat['dra_en']).message(item, parse='Markdown', no_preview=True)
 
-    with open('dra/sent.txt', 'w') as file:
+    with open(f'dra/{lang}.txt', 'w') as file:
         file.write(str(latest))
 
     task_done('send Dra news')
     return True
+
+
+def send_news_zh():
+    return send_news()
+
+
+def send_news_en():
+    return send_news('en')
