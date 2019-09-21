@@ -46,6 +46,9 @@ def starting_tasks(filename='start_tasks.txt'):
     if 'do_backup' in tasks:
         do_backup()
         i += 1
+    if 'send_news' in tasks:
+        send_news()
+        i += 1
     with open(filename, 'w') as f:
         f.write('')
     return True if i > 0 else None
