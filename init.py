@@ -1,6 +1,14 @@
 import os
-from taskManager import *
+import taskManager
 from tgapi.tools import set_proxy
+
+
+available_tasks = [
+    'send_greetings', 'send_flood', 'send_con',
+    'task_check', 'sync_posts', 'send_post',
+    'send_news_zh', 'send_news_en',
+    'do_backup'
+]
 
 
 def mkdir(folder=None):
@@ -22,36 +30,14 @@ def mkdir(folder=None):
 
 
 def starting_tasks(filename='start_tasks.txt'):
-    i = 0
     with open(filename, 'r') as f:
         tasks = f.read().split('\n')
-    if 'send_greetings' in tasks:
-        send_greetings()
-        i += 1
-    if 'send_flood' in tasks:
-        send_flood()
-        i += 1
-    if 'send_con' in tasks:
-        send_con()
-        i += 1
-    if 'task_check' in tasks:
-        task_check()
-        i += 1
-    if 'sync_posts' in tasks:
-        sync_posts()
-        i += 1
-    if 'send_post' in tasks:
-        send_post()
-        i += 1
-    if 'do_backup' in tasks:
-        do_backup()
-        i += 1
-    if 'send_news' in tasks:
-        send_news()
-        i += 1
+    for item in tasks:
+        if item in available_tasks:
+            getattr(taskManager, item)()
     with open(filename, 'w') as f:
         f.write('')
-    return True if i > 0 else None
+    return True
 
 
 def starting():
