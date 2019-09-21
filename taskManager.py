@@ -2,7 +2,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from mdSYSU import send_greetings, send_flood, send_con
 from checkUrl import task_check
 from mdTum import sync_posts, send_post
-from mdDra import send_news
+from mdDra import send_news_zh
 from mdBackup import do_backup
 
 scheduler = BlockingScheduler(misfire_grace_time=60)
@@ -23,7 +23,7 @@ def manager():
     scheduler.add_job(send_post, 'cron', hour='1,5,9,13,17,21', day_of_week='5,6')
 
     # mdDra
-    scheduler.add_job(send_news, 'cron', hour='2,8,13,14,15,20', minute=1)
+    scheduler.add_job(send_news_zh, 'cron', hour='2,8,13,14,15,20', minute=1)
 
     # mdBackup
     scheduler.add_job(do_backup, 'cron', day_of_week='sat', hour=2)
