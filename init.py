@@ -22,7 +22,7 @@ def mkdir(folder=None):
 def starting_tasks(filename='start_tasks.txt'):
     i = 0
     with open(filename, 'r') as f:
-        tasks = list(f.read())
+        tasks = f.read().split('\n')
     if 'send_greetings' in tasks:
         send_greetings()
         i += 1
