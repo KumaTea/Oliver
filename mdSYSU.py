@@ -1,6 +1,7 @@
 from checkConnect import check_con
 import mdWeather
-from botSession import kuma, task_done
+from botSession import kuma
+from tools import task_done
 import localDB
 import random
 
@@ -81,8 +82,10 @@ def send_greetings():
 def send_con():
     month, day, weekday = mdWeather.check_date()
     res_g_4 = emoji(check_con(urls['google'], '4'))
-    res_g_6 = emoji(check_con(urls['google'], '6'))
-    res_enwp = emoji(check_con(urls['enwp'], '4') or check_con(urls['enwp'], '6'))
+    g_6_status = check_con(urls['google'], '6')
+    res_g_6 = emoji(g_6_status)
+    enwp_status = check_con(urls['enwp'], '4') or check_con(urls['enwp'], '6')
+    res_enwp = emoji(enwp_status)
     res_zhwp = emoji(check_con(urls['zhwp'], '4') or check_con(urls['zhwp'], '6'))
     res_fb = emoji(check_con(urls['fb'], '4') or check_con(urls['fb'], '6'))
     res_twi = emoji(check_con(urls['twi'], '4') or check_con(urls['twi'], '6'))
@@ -98,7 +101,7 @@ def send_con():
               f'（注：技术升级为GET结果）'
 
     kuma.send(localDB.chat['sbddy']).message(con_msg)
-    if not tg_status:
+    if not tg_status or not g_6_status or not enwp_status:
         kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
     task_done('net con')
     return True

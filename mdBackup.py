@@ -2,7 +2,8 @@ import sys
 import subprocess
 import localDB
 from datetime import datetime
-from botSession import kuma, task_done
+from botSession import kuma
+from tools import task_done
 
 
 def do_backup():
