@@ -59,8 +59,8 @@ def send_news(lang='zh'):
                 msg = f'【{cat}】  {date}\n' \
                       f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
             else:
-                msg = f'**{cat}**\n' \
-                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                msg = f'*{cat}*\n' \
+                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
 
             if priority > sent:
                 to_send.insert(0, msg)
@@ -83,8 +83,8 @@ def send_news(lang='zh'):
                     msg = f'【{cat}】  {date}\n' \
                           f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
                 else:
-                    msg = f'**{cat}**\n' \
-                          f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                    msg = f'*{cat}*\n' \
+                          f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
 
                 if priority > sent:
                     to_send.insert(0, msg)
@@ -102,8 +102,8 @@ def send_news(lang='zh'):
                 msg = f'【{cat}】  {date}\n' \
                       f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
             else:
-                msg = f'**{cat}**\n' \
-                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                msg = f'*{cat}*\n' \
+                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
 
             to_send.insert(0, msg)
 
