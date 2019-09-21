@@ -2,3 +2,4 @@ tgapi
 apscheduler
 requests
 beautifulsoup4
+lxml
