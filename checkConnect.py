@@ -1,5 +1,6 @@
 from subprocess import check_output, CalledProcessError
-import requests
+from botSession import no_proxy
+from requests.exceptions import ConnectTimeout
 
 
 def check_con(url, pro='default', url_type=None):
@@ -20,7 +21,7 @@ def check_con(url, pro='default', url_type=None):
         if 'http' not in url:
             url = f'http://{url}'
         try:
-            requests.get(url, timeout=5)
+            no_proxy.get(url, timeout=5)
             return True
-        except requests.exceptions.ConnectTimeout:
+        except ConnectTimeout:
             return False

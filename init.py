@@ -44,25 +44,13 @@ def starting_tasks(filename='start_tasks.txt'):
     if 'do_backup' in tasks:
         do_backup()
         i += 1
+    with open(filename, 'w') as f:
+        f.write('')
     return True if i > 0 else None
-
-
-def no_proxy():
-    no_list = [
-        'google.com',
-        'wikipedia.org',
-        'facebook.com',
-        'twitter.com',
-        'instagram.com'
-    ]
-    for item in no_list:
-        os.environ['NO_PROXY'] = item
-    return True
 
 
 def starting():
     mkdir()
     set_proxy(port='10080')
-    no_proxy()
     starting_tasks()
     print('Starting fine.')

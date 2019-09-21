@@ -1,9 +1,13 @@
 import tgapi
 from datetime import datetime
+import requests
 
 
 kuma = tgapi.bot(781791363)
 dra = tgapi.bot(852069393)
+
+no_proxy = requests.session()
+no_proxy.trust_env = False
 
 
 def task_done(task=None):
