@@ -1,4 +1,6 @@
 import os
+from taskManager import *
+from tgapi import tools
 
 
 def mkdir(folder=None):
@@ -17,15 +19,36 @@ def mkdir(folder=None):
             os.mkdir(str(folder))
 
 
-def set_proxy(ip='127.0.0.1', port='1080', protocol='http'):
-    proxy = f'{protocol}://{ip}:{port}'
-    os.environ['http_proxy'] = proxy
-    os.environ['HTTP_PROXY'] = proxy
-    os.environ['https_proxy'] = proxy
-    os.environ['HTTPS_PROXY'] = proxy
+def starting_tasks(filename='start_tasks.txt'):
+    i = 0
+    with open(filename, 'r') as f:
+        tasks = list(f.read())
+    if 'send_greetings' in tasks:
+        send_greetings()
+        i += 1
+    if 'send_flood' in tasks:
+        send_flood()
+        i += 1
+    if 'send_con' in tasks:
+        send_con()
+        i += 1
+    if 'task_check' in tasks:
+        task_check()
+        i += 1
+    if 'sync_posts' in tasks:
+        sync_posts()
+        i += 1
+    if 'send_post' in tasks:
+        send_post()
+        i += 1
+    if 'do_backup' in tasks:
+        do_backup()
+        i += 1
+    return True if i > 0 else None
 
 
 def starting():
     mkdir()
-    set_proxy(port='10080')
+    tools.set_proxy(port='10080')
+    starting_tasks()
     print('Starting fine.')

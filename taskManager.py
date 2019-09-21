@@ -4,7 +4,7 @@ from checkUrl import task_check
 from mdTum import sync_posts, send_post
 from mdBackup import do_backup
 
-scheduler = BlockingScheduler()
+scheduler = BlockingScheduler(misfire_grace_time=60)
 
 
 def manager():

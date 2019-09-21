@@ -1,2 +1,4 @@
+tgapi
 apscheduler
 requests
+beautifulsoup4
