@@ -5,18 +5,13 @@ import json
 import re
 import pickle
 import localDB
-from botSession import dra, task_done
+from botSession import dra
+from tools import task_done
 from voteGenerator import create_vote
 
 
 blog = 'oudoubleyang.tumblr.com'
 tum_api = f'https://api.tumblr.com/v2/blog/{blog}/posts'
-
-
-def int_str_key(x):
-    if isinstance(x, dict):
-        return {int(k): v for k, v in x.items()}
-    return x
 
 
 def process_photo(raw_post, index=None):
@@ -125,13 +120,13 @@ def sync_posts():
             for i in range(latest_count - current_count):
                 if tum_posts['posts'][i]['type'] == 'photo':
                     tum_db['posts'][index] = process_photo(tum_posts['posts'][i], index)
-                    print('Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
+                    print('  Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
                 elif tum_posts['posts'][i]['type'] == 'text':
                     tum_db['posts'][index] = process_text(tum_posts['posts'][i], index)
-                    print('Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
+                    print('  Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
                 else:
                     tum_db['posts'][index] = json.dumps(tum_posts['posts'][i])
-                    print('Unknown type: ', tum_posts['posts'][i]['type'], '\n', json.dumps(tum_posts['posts'][i]))
+                    print('  Unknown type: ', tum_posts['posts'][i]['type'], '\n', json.dumps(tum_posts['posts'][i]))
                 index -= 1
 
         tum_db['info']['total'] = latest_count
