@@ -28,13 +28,13 @@ dow_cn = {
 }
 
 urls = {
-    'google': 'www.google.com',
+    'google': 'https://www.google.com',
     'tg': '2001:b28:f23f:f005::a',
-    'zhwp': 'zh.wikipedia.org',
-    'enwp': 'en.wikipedia.org',
-    'fb': 'www.facebook.com',
-    'twi': 'twitter.com',
-    'ins': 'www.instagram.com'
+    'zhwp': 'https://zh.wikipedia.org',
+    'enwp': 'https://en.wikipedia.org',
+    'fb': 'https://www.facebook.com',
+    'twi': 'https://twitter.com',
+    'ins': 'https://www.instagram.com'
 }
 
 
@@ -95,7 +95,7 @@ def send_con():
               f'Telegram: {res_tg}\n' \
               f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
               f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}\n' \
-              f'（注：技术限制，均为ping结果）'
+              f'（注：技术升级为GET结果）'
 
     kuma.send(localDB.chat['sbddy']).message(con_msg)
     if not tg_status:
