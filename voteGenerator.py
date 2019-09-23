@@ -2,7 +2,7 @@ import json
 import time
 
 
-def create_vote(options, output='reply_markup'):
+def create_vote(options, output='all'):
     vote_time = int(time.time())
     vote_id = f'vote{vote_time}'
     if type(options) == tuple:
@@ -28,8 +28,10 @@ def create_vote(options, output='reply_markup'):
         return vote_id
     elif 'raw' in output or 'json' in output:
         return vote_json
-    else:
+    elif 'markup' in output:
         return gen_reply_markup(vote_id, options, True)
+    else:
+        return vote_id, gen_reply_markup(vote_id, options, True)
 
 
 def gen_reply_markup(vote_id, options=None, new=False):

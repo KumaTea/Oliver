@@ -172,10 +172,11 @@ def send_post():
         msg = f'Index: {to_send}\n' \
               f'Description: {post_desc}\n' \
               f'{tag}Link: [click me]({post_link})'
-        vote = create_vote(['😍', '👍', '👎'])
-        dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote)
+        vote_id, vote_markup = create_vote(['😍', '👍', '👎'])
+        dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote_markup)
 
         tum_db['info']['sent'] = to_send
+        tum_db['posts'][to_send]['vote'] = vote_id
         with open('tum/posts.p', 'wb') as file:
             pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
 

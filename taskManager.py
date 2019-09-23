@@ -1,6 +1,6 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from mdSYSU import send_greetings, send_flood, send_con
-from checkUrl import task_check
+from checkUrl import check_url
 from mdTum import sync_posts, send_post
 from mdDra import send_news_zh, send_news_en
 from mdBackup import do_backup
@@ -15,7 +15,7 @@ def manager():
     scheduler.add_job(send_flood, 'cron', hour=21)
 
     # checkUrl
-    scheduler.add_job(task_check, 'cron', hour='*/4', minute=15)
+    scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
 
     # mdTum
     scheduler.add_job(sync_posts, 'cron', hour=6)
