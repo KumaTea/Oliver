@@ -11,7 +11,6 @@ dra_api = 'https://dragalialost.com/api/index.php'
 
 
 def send_news(lang='zh'):
-    sent = None
     if 'zh' in lang:
         lang = 'zh'
     elif 'en' in lang:
@@ -25,7 +24,7 @@ def send_news(lang='zh'):
         with open(f'dra/{lang}.txt', 'r') as file:
             sent = int(file.read())
     except FileNotFoundError:
-        pass
+        sent = None
 
     params = {
         'format': 'json',
