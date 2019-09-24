@@ -18,15 +18,15 @@ headers = {
 }
 
 events = {
-    '国庆节': '2019-10-01',
-    '期中考试周': '2019-10-28',
-    '考试周结束': '2019-11-01',
-    '95周年校庆': '2019-11-12',
-    '2020年元旦': '2020-01-01',
-    '期末考试周': '2020-01-06',
-    '寒假': '2020-01-16',
-    '春节': '2020-01-25',
-    '元宵（开学）': '2020-02-08',
+    '2019-10-01': '国庆节',
+    '2019-10-28': ['期中考试周', '期中考试周到了，祝大家考试顺利！'],
+    '2019-11-01': '考试周结束',
+    '2019-11-12': '95周年校庆',
+    '2020-01-01': '2020年元旦',
+    '2020-01-06': ['期末考试周', '期末考试周到了，祝大家考试顺利！'],
+    '2020-01-16': '寒假',
+    '2020-01-25': '春节',
+    '2020-02-08': ['元宵（开学）', '祝大家元宵节快乐！'],
 }
 
 
@@ -84,8 +84,14 @@ def check_date():
 
 def check_event_int():
     for item in events:
-        interval = (datetime.fromisoformat(events[item]) - datetime.now()).days
+        interval = (datetime.fromisoformat(item) - datetime.now()).days
         if interval == 0:
-            return f'{item}快乐！'
+            if type(events[item]) == str:
+                return f'{events[item]}快乐！'
+            else:
+                return events[item][1]
         elif interval > 0:
-            return f'距离{item}还有{interval}天。'
+            if type(events[item]) == str:
+                return f'距离{events[item]}还有{interval}天。'
+            else:
+                return f'距离{events[item][0]}还有{interval}天。'
