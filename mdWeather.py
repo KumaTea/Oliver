@@ -1,4 +1,4 @@
-import requests
+from botSession import no_proxy
 from tgapi import tools
 from datetime import datetime
 import re
@@ -36,7 +36,7 @@ def check_current(item='code'):
         'q': 'Guangzhou',
         'lang': 'zh_cn'
     }
-    result = requests.get(current_api, params=weather_data).json()
+    result = no_proxy.get(current_api, params=weather_data).json()
     if 'code' in item:
         return result['weather'][0]['id']
     elif 'desc' in item:
@@ -44,7 +44,7 @@ def check_current(item='code'):
 
 
 def check_forecast(location):
-    result = requests.get(f'{forecast_api}{location}').json()
+    result = no_proxy.get(f'{forecast_api}{location}').json()
     today = datetime.now().strftime('%d')
     index = 0
     for i in range(len(result['data']['forecast'])):
@@ -70,7 +70,7 @@ def weather_status():
 
 def check_lunar():
     date_str = str(int(datetime.now().strftime('%d')))
-    result = requests.get(lunar_api, headers=headers).json()
+    result = no_proxy.get(lunar_api, headers=headers).json()
     month = result['data']['cnmonth']
     day = result['data']['cnday']
     term = result['data']['jieqi'].get(date_str, '')
