@@ -17,6 +17,18 @@ headers = {
                   'Chrome/76.0.3809.132 Safari/537.36',
 }
 
+events = {
+    '国庆节': '2019-10-01',
+    '期中考试周': '2019-10-28',
+    '考试周结束': '2019-11-01',
+    '95周年校庆': '2019-11-12',
+    '2020年元旦': '2020-01-01',
+    '期末考试周': '2020-01-06',
+    '寒假': '2020-01-16',
+    '春节': '2020-01-25',
+    '元宵（开学）': '2020-02-08',
+}
+
 
 def check_current(item='code'):
     weather_data = {
@@ -68,3 +80,12 @@ def check_lunar():
 
 def check_date():
     return int(datetime.now().strftime('%m')), int(datetime.now().strftime('%d')), datetime.weekday(datetime.now())
+
+
+def check_event_int():
+    for item in events:
+        interval = (datetime.fromisoformat(events[item]) - datetime.now()).days
+        if interval == 0:
+            return f'{item}快乐！'
+        elif interval > 0:
+            return f'距离{item}还有{interval}天。'
