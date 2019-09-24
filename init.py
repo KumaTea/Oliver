@@ -30,13 +30,17 @@ def mkdir(folder=None):
 
 
 def starting_tasks(filename='start_tasks.txt'):
+    remain = ''
     with open(filename, 'r') as f:
         tasks = f.read().split('\n')
     for item in tasks:
         if item in available_tasks:
             getattr(taskManager, item)()
+        else:
+            print(f'Unavailable task: {item}')
+            remain += f'{item}\n'
     with open(filename, 'w') as f:
-        f.write('')
+        f.write(remain)
     return True
 
 

@@ -98,8 +98,7 @@ def send_con():
               f'Google: v4 {res_g_4}  v6 {res_g_6}\n' \
               f'Telegram: {res_tg}\n' \
               f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
-              f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}\n' \
-              f'（注：技术升级为GET结果）'
+              f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}'
 
     kuma.send(localDB.chat['sbddy']).message(con_msg)
     if not tg_status or not g_6_status or not enwp_status:
