@@ -61,20 +61,19 @@ def send_flood():
 
 
 def send_greetings():
-    """
-    g_temp, g_temp_max, g_weather_desc = mdWeather.check_forecast(Guangzhou_code)
-    z_temp, z_temp_max, z_weather_desc = mdWeather.check_forecast(Zhuhai_code)
-    s_temp, s_temp_max, s_weather_desc = mdWeather.check_forecast(Shenzhen_code)
-    f'广州{g_weather_desc}，{g_temp}~{g_temp_max}度；' \
-    f'珠海{z_weather_desc}，{z_temp}~{z_temp_max}度；' \
-    f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n'
-    """
+    forecast = mdWeather.check_forecast()
+    g_temp, g_temp_max, g_weather_desc = forecast['g']
+    z_temp, z_temp_max, z_weather_desc = forecast['z']
+    s_temp, s_temp_max, s_weather_desc = forecast['s']
+
     month, day, weekday = mdWeather.check_date()
     lunar_month, lunar_day, lunar_term = mdWeather.check_lunar()
     event = mdWeather.check_event_int()
     grt_msg = f'各位{random.choice(SYSU)}的{random.choice(student)}早上好！' \
               f'今天是{month}月{day}日星期{dow_cn[weekday]}，农历{lunar_month}月{lunar_day}{lunar_term}。{event}\n' \
-              f'天气API异常，后续修复……\n\n' \
+              f'广州{g_weather_desc}，{g_temp}~{g_temp_max}度；' \
+              f'珠海{z_weather_desc}，{z_temp}~{z_temp_max}度；' \
+              f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n'\
               f'{random.choice(greet_msg)}，，，'
 
     kuma.send(localDB.chat['sbddy']).text(grt_msg)

@@ -2,11 +2,12 @@ from botSession import no_proxy
 from tgapi import tools
 from datetime import datetime
 import re
+from bs4 import BeautifulSoup
 
 
 weather_token = tools.read_file('token_weather', 'base64')
 current_api = 'https://api.openweathermap.org/data/2.5/weather'
-forecast_api = 'http://t.weather.sojson.com/api/weather/city/'
+forecast_api = 'http://flash.weather.com.cn/wmaps/xml/guangdong.xml'
 lunar_api = 'https://www.sojson.com/open/api/lunar/json.shtml'
 
 weather_id = {'maybe': [210, 211, 212, 311, 312, 313, 314, 321, 502, 503, 504],
@@ -43,19 +44,20 @@ def check_current(item='code'):
         return result['weather'][0]['description']
 
 
-def check_forecast(location):
-    result = no_proxy.get(f'{forecast_api}{location}').json()
-    today = datetime.now().strftime('%d')
-    index = 0
-    for i in range(len(result['data']['forecast'])):
-        if result['data']['forecast'][i]['date'] == today:
-            index = i
-            break
-    low = re.sub(r'\D', '', result['data']['forecast'][index]['low'])
-    high = re.sub(r'\D', '', result['data']['forecast'][index]['high'])
-    description = result['data']['forecast'][index]['type']
+def check_forecast():
+    forecast = {}
+    result = no_proxy.get(forecast_api)
+    result.encoding = result.apparent_encoding
+    soup = BeautifulSoup(result.text, features='lxml')
+    for item in soup.find_all('city'):
+        if item.get('cityname') == '广州':
+            forecast['g'] = [item.get('tem2'), item.get('tem1'), item.get('statedetailed')]
+        elif item.get('cityname') == '深圳':
+            forecast['s'] = [item.get('tem2'), item.get('tem1'), item.get('statedetailed')]
+        elif item.get('cityname') == '珠海':
+            forecast['z'] = [item.get('tem2'), item.get('tem1'), item.get('statedetailed')]
 
-    return low, high, description
+    return forecast
 
 
 def weather_status():
