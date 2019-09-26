@@ -159,7 +159,10 @@ def send_post():
                 skip = False
 
         for item in tum_db['posts'][to_send]['photo']:
-            dra.send(localDB.chat['st']).photo(item)
+            if item.endswith('gif'):
+                dra.send(localDB.chat['st']).gif(item)
+            else:
+                dra.send(localDB.chat['st']).photo(item)
 
         post_desc = tum_db['posts'][to_send]['summary']
         post_link = tum_db['posts'][to_send]['link']

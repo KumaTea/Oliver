@@ -112,11 +112,11 @@ def send_news(lang='zh'):
                 dra.send(localDB.chat['dra_zh']).message(item, parse='Markdown', no_preview=True)
             elif 'en' in lang:
                 dra.send(localDB.chat['dra_en']).message(item, parse='Markdown', no_preview=True)
+        task_done('send Dra news')
 
     with open(f'dra/{lang}.txt', 'w') as file:
         file.write(str(latest))
 
-    task_done('send Dra news')
     return True
 
 
