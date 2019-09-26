@@ -37,8 +37,9 @@ def starting_tasks(filename='start_tasks.txt'):
         if item in available_tasks:
             getattr(taskManager, item)()
         else:
-            print(f'Unavailable task: {item}')
-            remain += f'{item}\n'
+            if not item == '':
+                print(f'Unavailable task: {item}')
+                remain += f'{item}\n'
     with open(filename, 'w') as f:
         f.write(remain)
     return True
