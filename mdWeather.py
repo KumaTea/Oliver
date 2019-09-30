@@ -1,7 +1,6 @@
 from botSession import no_proxy
 from tgapi import tools
 from datetime import datetime
-import re
 from bs4 import BeautifulSoup
 
 
@@ -86,7 +85,7 @@ def check_date():
 
 def check_event_int():
     for item in events:
-        interval = (datetime.fromisoformat(item) - datetime.now()).days
+        interval = (datetime.fromisoformat(item) - datetime.now()).days + 1
         if interval == 0:
             if type(events[item]) == str:
                 return f'{events[item]}快乐！'

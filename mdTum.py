@@ -135,6 +135,8 @@ def sync_posts():
 
     with open('tum/posts.p', 'wb') as file:
         pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('tum/posts.json', 'w') as file:
+        json.dump(tum_db, file)
 
     task_done('sync')
     return True

@@ -4,6 +4,7 @@ from botSession import kuma
 from tools import task_done
 import localDB
 import random
+import json
 
 SYSU = ['中山大学', '中大', '中带', '双鸭山', '鸭大', '鸭鸭山', '双倍多多鸭', ]
 student = ['学生', '学子', '大佬', '带佬', '高雅人士', '大手子', ]
@@ -102,8 +103,34 @@ def send_con():
               f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
               f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}'
 
-    kuma.send(localDB.chat['sbddy']).message(con_msg)
-    if not tg_status or not g_6_status or not enwp_status:
-        kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
+    try:
+        with open(f'connect.json', 'r') as file:
+            con_log = json.load(file)
+            if con_log['msg'] == con_msg:
+                same = True
+            else:
+                same = False
+    except FileNotFoundError:
+        same = False
+
+    if same:
+        same_msg = '今日的中大校园网连通性报告与上次一致。'
+        kuma.send(localDB.chat['sbddy']).message(same_msg, reply_to=con_log['msg_id'])
+        if con_log['sticker']:
+            kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
+    else:
+        sticker = False
+        result = kuma.send(localDB.chat['sbddy']).message(con_msg)
+        if not tg_status or not g_6_status or not enwp_status:
+            sticker = True
+            kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
+        new_log = {
+            'msg_id': kuma.get(result).message('id'),
+            'msg': con_msg,
+            'sticker': sticker
+        }
+        with open(f'connect.json', 'w') as file:
+            json.dump(new_log, file)
+
     task_done('net con')
     return True
