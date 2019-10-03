@@ -31,7 +31,7 @@ dow_cn = {
 
 urls = {
     'google': 'https://www.google.com',
-    'tg': '2001:b28:f23f:f005::a',
+    'tg': 'https://web.telegram.org/',
     'zhwp': 'https://zh.wikipedia.org',
     'enwp': 'https://en.wikipedia.org',
     'fb': 'https://www.facebook.com',
@@ -106,7 +106,7 @@ def send_con():
     try:
         with open(f'connect.json', 'r') as file:
             con_log = json.load(file)
-            if con_log['msg'] == con_msg:
+            if con_log['msg'] == [res_g_4, res_g_6, res_enwp, res_zhwp, res_fb, res_twi, res_ins, res_tg]:
                 same = True
             else:
                 same = False
@@ -126,7 +126,7 @@ def send_con():
             kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
         new_log = {
             'msg_id': kuma.get(result).message('id'),
-            'msg': con_msg,
+            'msg': [res_g_4, res_g_6, res_enwp, res_zhwp, res_fb, res_twi, res_ins, res_tg],
             'sticker': sticker
         }
         with open(f'connect.json', 'w') as file:
