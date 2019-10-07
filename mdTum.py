@@ -159,12 +159,18 @@ def send_post():
                 to_send += 1
             else:
                 skip = False
-
-        for item in tum_db['posts'][to_send]['photo']:
+        if 'first' in tum_db['posts'][to_send]['tags']:
+            item = tum_db['posts'][to_send]['photo'][0]
             if item.endswith('gif'):
                 dra.send(localDB.chat['st']).gif(item)
             else:
                 dra.send(localDB.chat['st']).photo(item)
+        else:
+            for item in tum_db['posts'][to_send]['photo']:
+                if item.endswith('gif'):
+                    dra.send(localDB.chat['st']).gif(item)
+                else:
+                    dra.send(localDB.chat['st']).photo(item)
 
         post_desc = tum_db['posts'][to_send]['summary']
         post_link = tum_db['posts'][to_send]['link']

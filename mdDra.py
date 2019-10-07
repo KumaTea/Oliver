@@ -49,7 +49,7 @@ def send_news(lang='zh'):
     if sent:
         for news in news_list:
             cat = news['category_name']
-            title = news['title_name'].replace('[', ' (').replace(']', ']')
+            title = news['title_name'].replace('[', ' (').replace(']', ')')
             date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
             article_id = news['article_id']
             priority = news['priority']
