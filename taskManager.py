@@ -15,7 +15,7 @@ def manager():
     scheduler.add_job(send_flood, 'cron', hour=21)
 
     # checkUrl
-    scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
+    # scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
 
     # mdTum
     scheduler.add_job(sync_posts, 'cron', hour=6)
