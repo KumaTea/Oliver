@@ -47,20 +47,6 @@ def emoji(result):
 # TASKS
 
 
-def send_flood():
-    result = mdWeather.weather_status()
-    if result == 0:
-        flood_msg = '今天双鸭山大学可能淹水了'
-    elif result == 1:
-        flood_msg = '今天中大淹水了'
-    else:
-        flood_msg = '今天中大没有淹水'
-
-    kuma.send(localDB.chat['ooxx']).text(flood_msg)
-    task_done('checkFlood')
-    return True
-
-
 def send_greetings():
     forecast = mdWeather.check_forecast()
     g_temp, g_temp_max, g_weather_desc = forecast['g']

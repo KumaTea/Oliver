@@ -1,5 +1,6 @@
 import requests
 import localDB
+import json
 from datetime import datetime
 from botSession import dra
 from tools import task_done
@@ -7,7 +8,7 @@ from tools import task_done
 dra_api = "https://dragalialost.com/api/index.php"
 
 
-def get_news(lang="zh_cn", priority=""):
+def get_news_data(lang="zh_cn", priority=None):
     params = {
         "format": "json",
         "type": "information",
@@ -19,56 +20,90 @@ def get_news(lang="zh_cn", priority=""):
     return requests.get(dra_api, params=params).json()
 
 
-def format_news(news, lang="chs"):
-    cat = news["category_name"]
-    title = news["title_name"].replace("[", " (").replace("]", ")")
-    date = datetime.fromtimestamp(news["date"]).strftime("%m-%d %H:%M")
-    article_id = news["article_id"]
-    return f"*[{cat}]*  {date}\n[{title}](https://dragalialost.com/{lang}/news/detail/{article_id})"
-
-
-def send_message(msg, lang="zh"):
-    dra.send(localDB.chat[f"dra_{lang}"]).message(msg, parse="Markdown", no_preview=True)
-    task_done("send Dra news")
-
-
-def send_news(lang="zh_cn"):
+def get_sent_log(lang="zh_cn"):
     try:
-        with open(f"dra/{lang}.txt") as file:
+        with open(f"dra/{lang}.json", "r") as file:
             try:
-                sent = int(file.read())
-            except ValueError:
-                if file.tell() == 0:
-                    task_done("Empty file")
-                else:
-                    task_done("File not readable or does not contain the news index")
-                return False
+                sent = json.load(file)
+            except json.decoder.JSONDecodeError:
+                sent = False
     except FileNotFoundError:
-        task_done("News index file not found")
-        return False
+        sent = False
+    return sent
 
-    news_data = get_news(lang=lang)
+
+def send_news(lang='zh_cn'):
+    sent = get_sent_log(lang)
+
+    news_data = get_news_data(lang)
     news_list = news_data["data"]["category"]["contents"]
-    oldest = int(news_data["data"]["category"]["priority_lower_than"])
-    latest = news_list[0]["priority"]
 
-    while sent < oldest:
-        news_data = get_news(lang=lang, priority=oldest)
-        news_list.extend(news_data["data"]["category"]["contents"])
-        oldest = int(news_data["data"]["category"]["priority_lower_than"])
-    for news in reversed(news_list):
-        if news["priority"] > sent:
-            send_message(format_news(news, "chs" if lang == "zh_cn" else "en"), lang[:2])
+    to_send = []
 
-    with open(f"dra/{lang}.txt", "w") as file:
-        file.write(str(latest))
+    if sent:
+        if sent[0]['title_name'] == news_list[0]['title_name'] and sent[0]['article_id'] == news_list[0]['article_id'] \
+                and sent[0]['priority'] == news_list[0]['priority']:
+            pass
+        else:
+            not_found = True
+            renew = 0
+            while not_found:
+                for news in news_list:
+                    for old_news in sent:
+                        if news['title_name'] == old_news['title_name'] and news['article_id'] == old_news['article_id']:
+                            not_found = False
+                            break
+                        else:
+                            cat = news['category_name']
+                            title = news['title_name'].replace('[', ' (').replace(']', ')')
+                            date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
+                            article_id = news['article_id']
+
+                            if 'zh' in lang:
+                                msg = f'【{cat}】  {date}\n' \
+                                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                            else:
+                                msg = f'*{cat}*\n' \
+                                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
+
+                            to_send.append(msg)
+
+                    if not not_found:
+                        break
+
+                smallest_priority = news_list[-1]['priority']
+                news_list = get_news_data(lang, smallest_priority)
+                renew += 1
+                if renew > 2:
+                    not_found = False
+
+    else:
+        for news in news_list:
+            cat = news['category_name']
+            title = news['title_name'].replace('[', ' (').replace(']', ')')
+            date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
+            article_id = news['article_id']
+
+            if 'zh' in lang:
+                msg = f'【{cat}】  {date}\n' \
+                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+            else:
+                msg = f'*{cat}*\n' \
+                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
+
+            to_send.append(msg)
+
+    if to_send:
+        for item in reversed(to_send):
+            dra.send(localDB.chat[f'dra_{lang}']).message(item, parse='Markdown', no_preview=True)
+
+        with open(f"dra/{lang}.json", "w") as file:
+            json.dump(news_list, file)
 
     return True
 
 
-def send_news_zh():
-    return send_news()
-
-
-def send_news_en():
-    return send_news("en_us")
+def send_news_all():
+    send_news()
+    send_news("en_us")
+    task_done("send dra news")
