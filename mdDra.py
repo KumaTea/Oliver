@@ -53,23 +53,22 @@ def send_news(lang='zh_cn'):
                         if news['title_name'] == old_news['title_name'] and news['article_id'] == old_news['article_id']:
                             not_found = False
                             break
-                        else:
-                            cat = news['category_name']
-                            title = news['title_name'].replace('[', ' (').replace(']', ')')
-                            date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
-                            article_id = news['article_id']
-
-                            if 'zh' in lang:
-                                msg = f'【{cat}】  {date}\n' \
-                                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
-                            else:
-                                msg = f'*{cat}*\n' \
-                                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
-
-                            to_send.append(msg)
 
                     if not not_found:
                         break
+                    cat = news['category_name']
+                    title = news['title_name'].replace('[', ' (').replace(']', ')')
+                    date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
+                    article_id = news['article_id']
+
+                    if 'zh' in lang:
+                        msg = f'【{cat}】  {date}\n' \
+                              f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+                    else:
+                        msg = f'*{cat}*\n' \
+                              f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
+
+                    to_send.append(msg)
 
                 smallest_priority = news_list[-1]['priority']
                 news_list = get_news_data(lang, smallest_priority)

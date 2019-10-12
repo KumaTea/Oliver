@@ -4,9 +4,9 @@ from tgapi.tools import set_proxy
 
 
 available_tasks = [
-    'send_greetings', 'send_flood', 'send_con',
+    'send_greetings', 'send_con',
     'task_check', 'sync_posts', 'send_post',
-    'send_news_zh', 'send_news_en',
+    'send_news_all',
     'do_backup'
 ]
 
