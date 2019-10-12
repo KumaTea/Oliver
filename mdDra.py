@@ -47,6 +47,9 @@ def send_news(lang='zh_cn'):
         else:
             not_found = True
             renew = 0
+            with open(f"dra/{lang}.json", "w") as file:
+                json.dump(news_list, file)
+
             while not_found:
                 for news in news_list:
                     for old_news in sent:
@@ -92,12 +95,12 @@ def send_news(lang='zh_cn'):
 
             to_send.append(msg)
 
+        with open(f"dra/{lang}.json", "w") as file:
+            json.dump(news_list, file)
+
     if to_send:
         for item in reversed(to_send):
             dra.send(localDB.chat[f'dra_{lang}']).message(item, parse='Markdown', no_preview=True)
-
-        with open(f"dra/{lang}.json", "w") as file:
-            json.dump(news_list, file)
 
     return True
 
