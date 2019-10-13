@@ -172,7 +172,7 @@ def send_post():
                 else:
                     dra.send(localDB.chat['st']).photo(item)
 
-        post_desc = tum_db['posts'][to_send]['summary']
+        post_desc = tum_db['posts'][to_send]['summary'].replace('@', '#')
         post_link = tum_db['posts'][to_send]['link']
         md_desc = re.sub(
             'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)

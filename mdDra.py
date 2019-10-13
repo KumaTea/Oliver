@@ -32,6 +32,22 @@ def get_sent_log(lang="zh_cn"):
     return sent
 
 
+def format_news(raw, lang='zh_cn'):
+    cat = raw['category_name']
+    title = raw['title_name'].replace('[', ' (').replace(']', ')')
+    article_id = raw['article_id']
+
+    if 'zh' in lang:
+        date = datetime.fromtimestamp(raw['date']).strftime('%m-%d %H:%M')
+        msg = f'【{cat}】  {date}\n' \
+              f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
+    else:
+        msg = f'*{cat}*\n' \
+              f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
+
+    return msg
+
+
 def send_news(lang='zh_cn'):
     sent = get_sent_log(lang)
 
@@ -59,18 +75,8 @@ def send_news(lang='zh_cn'):
 
                     if not not_found:
                         break
-                    cat = news['category_name']
-                    title = news['title_name'].replace('[', ' (').replace(']', ')')
-                    date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
-                    article_id = news['article_id']
 
-                    if 'zh' in lang:
-                        msg = f'【{cat}】  {date}\n' \
-                              f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
-                    else:
-                        msg = f'*{cat}*\n' \
-                              f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
-
+                    msg = format_news(news, lang)
                     to_send.append(msg)
 
                 smallest_priority = news_list[-1]['priority']
@@ -81,18 +87,7 @@ def send_news(lang='zh_cn'):
 
     else:
         for news in news_list:
-            cat = news['category_name']
-            title = news['title_name'].replace('[', ' (').replace(']', ')')
-            date = datetime.fromtimestamp(news['date']).strftime('%m-%d %H:%M')
-            article_id = news['article_id']
-
-            if 'zh' in lang:
-                msg = f'【{cat}】  {date}\n' \
-                      f'[{title}](https://dragalialost.com/chs/news/detail/{article_id})'
-            else:
-                msg = f'*{cat}*\n' \
-                      f'[{title}](https://dragalialost.com/en/news/detail/{article_id})'
-
+            msg = format_news(news, lang)
             to_send.append(msg)
 
         with open(f"dra/{lang}.json", "w") as file:
