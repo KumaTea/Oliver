@@ -1,5 +1,4 @@
 import sys
-import time
 import subprocess
 import localDB
 from datetime import datetime
@@ -16,10 +15,3 @@ def do_backup():
     kuma.send(localDB.chat['me']).file(filepath, upload=True)
     task_done('backup')
     return True
-
-
-def restart_hs():
-    subprocess.run('netsh wlan stop hostednetwork')
-    time.sleep(5)
-    subprocess.run('netsh wlan start hostednetwork')
-    task_done('restart hotspot')
