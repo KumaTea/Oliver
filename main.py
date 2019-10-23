@@ -1,4 +1,4 @@
-from init import starting
+from starting import starting
 from taskManager import manager, scheduler
 
 

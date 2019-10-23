@@ -12,8 +12,6 @@ available_tasks = [
 
 
 def mkdir(folder=None):
-    if not os.path.exists('tmp'):
-        os.mkdir('tmp')
     if not os.path.exists('tum'):
         os.mkdir('tum')
     if not os.path.exists('dra'):

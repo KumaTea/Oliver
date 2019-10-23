@@ -1,4 +1,4 @@
-from botSession import no_proxy
+import requests
 from tgapi import tools
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -36,7 +36,7 @@ def check_current(item='code'):
         'q': 'Guangzhou',
         'lang': 'zh_cn'
     }
-    result = no_proxy.get(current_api, params=weather_data).json()
+    result = requests.get(current_api, params=weather_data).json()
     if 'code' in item:
         return result['weather'][0]['id']
     elif 'desc' in item:
@@ -45,7 +45,7 @@ def check_current(item='code'):
 
 def check_forecast():
     forecast = {}
-    result = no_proxy.get(forecast_api)
+    result = requests.get(forecast_api)
     result.encoding = result.apparent_encoding
     soup = BeautifulSoup(result.text, features='lxml')
     for item in soup.find_all('city'):
@@ -71,7 +71,7 @@ def weather_status():
 
 def check_lunar():
     date_str = str(int(datetime.now().strftime('%d')))
-    result = no_proxy.get(lunar_api, headers=headers).json()
+    result = requests.get(lunar_api, headers=headers).json()
     month = result['data']['cnmonth']
     day = result['data']['cnday']
     term = result['data']['jieqi'].get(date_str, '')
