@@ -134,7 +134,7 @@ def sync_posts():
     tum_db['posts'] = dict(sorted(tum_db['posts'].items()))
 
     with open('tum/posts.p', 'wb') as file:
-        pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(tum_db, file, protocol=4)
     with open('tum/posts.json', 'w') as file:
         json.dump(tum_db, file)
 
@@ -189,7 +189,7 @@ def send_post():
         tum_db['info']['sent'] = to_send
         tum_db['posts'][to_send]['vote'] = vote_id
         with open('tum/posts.p', 'wb') as file:
-            pickle.dump(tum_db, file, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(tum_db, file, protocol=4)
 
     task_done('send post')
     return True

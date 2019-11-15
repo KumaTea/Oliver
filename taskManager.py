@@ -11,7 +11,7 @@ scheduler = BlockingScheduler(misfire_grace_time=60)
 def manager():
     # mdSYSU
     scheduler.add_job(send_greetings, 'cron', hour=7, minute=30)
-    scheduler.add_job(send_con, 'cron', hour=8, minute=30)
+    # scheduler.add_job(send_con, 'cron', hour=8, minute=30)
 
     # checkUrl
     # scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
@@ -24,4 +24,4 @@ def manager():
     # mdDra
     scheduler.add_job(send_news_all, 'cron', hour='2,8,13,14,15,20', minute=1)
     # mdHostCommands
-    scheduler.add_job(do_backup, 'cron', day_of_week='sat', hour=2)
+    # scheduler.add_job(do_backup, 'cron', day_of_week='sat', hour=2)

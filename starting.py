@@ -45,6 +45,7 @@ def starting_tasks(filename='start_tasks.txt'):
 
 def starting():
     mkdir()
-    set_proxy(port='10080')
+    if 'nt' in os.name:
+        set_proxy()
     starting_tasks()
     print('Starting fine.')
