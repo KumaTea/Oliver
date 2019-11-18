@@ -96,3 +96,5 @@ def check_event_int():
                 return f'距离{events[item]}还有{interval}天。'
             else:
                 return f'距离{events[item][0]}还有{interval}天。'
+        else:
+            return ''

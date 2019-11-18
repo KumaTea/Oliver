@@ -160,19 +160,18 @@ def send_post():
             else:
                 skip = False
         if 'first' in tum_db['posts'][to_send]['tags']:
-            item = tum_db['posts'][to_send]['photo'][0]
+            sending = [tum_db['posts'][to_send]['photo'][0]]
+        elif 'last' in tum_db['posts'][to_send]['tags']:
+            sending = [tum_db['posts'][to_send]['photo'][-1]]
+        else:
+            sending = tum_db['posts'][to_send]['photo']
+        for item in sending:
             if item.endswith('gif'):
                 dra.send(localDB.chat['st']).gif(item)
             else:
                 dra.send(localDB.chat['st']).photo(item)
-        else:
-            for item in tum_db['posts'][to_send]['photo']:
-                if item.endswith('gif'):
-                    dra.send(localDB.chat['st']).gif(item)
-                else:
-                    dra.send(localDB.chat['st']).photo(item)
 
-        post_desc = tum_db['posts'][to_send]['summary'].replace('*', 'x')
+        post_desc = tum_db['posts'][to_send]['summary'].replace('*', '\*').replace('_', '\_')
         post_link = tum_db['posts'][to_send]['link']
         md_desc = re.sub(
             'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)
