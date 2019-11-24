@@ -142,6 +142,29 @@ def sync_posts():
     return True
 
 
+def desc_format(desc):
+    re_url = re.sub(
+        'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', desc)
+    in_url = False
+    esc_desc = ''
+    for i in re_url:
+        if i == '[':
+            in_url = True
+            esc_desc += i
+        elif i == ']':
+            in_url = False
+            esc_desc += i
+        elif i == '_' or i == '*':
+            if in_url:
+                esc_desc += i
+            else:
+                esc_desc += f'\\{i}'
+        else:
+            esc_desc += i
+    fm_url = (lambda p: p if p else None)(esc_desc.replace('([', '(').replace(')]', ')'))
+    return fm_url
+
+
 def send_post():
     try:
         with open('tum/posts.p', 'rb') as file:
@@ -171,11 +194,8 @@ def send_post():
             else:
                 dra.send(localDB.chat['st']).photo(item)
 
-        post_desc = tum_db['posts'][to_send]['summary'].replace('*', '\*').replace('_', '\_')
+        post_desc = desc_format(tum_db['posts'][to_send]['summary'])
         post_link = tum_db['posts'][to_send]['link']
-        md_desc = re.sub(
-            'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', post_desc)
-        post_desc = (lambda p: p if p else None)(md_desc.replace('([', '(').replace(')]', ')'))
         tag = ''
         if 'NSFW' in tum_db['posts'][to_send]['tags']:
             tag = 'Tags: #NSFW\n'
