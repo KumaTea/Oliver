@@ -1,5 +1,9 @@
 import json
 import time
+try:
+    from localDB import vote_dir
+except ImportError:
+    vote_dir = '../vote'
 
 
 def create_vote(options, output='all'):
@@ -21,8 +25,11 @@ def create_vote(options, output='all'):
     for item in options:
         vote_json['options'][item] = []
 
-    with open(f'../vote/{vote_id}', 'w') as vote_file:
-        json.dump(vote_json, vote_file)
+    with open(f'{vote_dir}/vote.json', 'r') as file:
+        vote_data = json.load(file)
+    vote_data[vote_id] = json.dumps(vote_json)
+    with open(f'{vote_dir}/vote.json', 'w') as file:
+        json.dump(vote_data, file)
 
     if 'id' in output:
         return vote_id
@@ -47,12 +54,12 @@ def gen_reply_markup(vote_id, options=None, new=False):
             reply_markup['inline_keyboard'][0].append(option_dict)
         return reply_markup
     else:
-        with open(f'../vote/{vote_id}', 'r') as file:
+        with open(f'{vote_dir}/vote.json', 'r') as file:
             vote_data = json.load(file)
-        options = vote_data['info']['options']
+        options = vote_data[vote_id]['info']['options']
         for item in options:
             option_dict = {
-                'text': item + choice_count(len(vote_data['options'][item])),
+                'text': item + choice_count(len(vote_data[vote_id]['options'][item])),
                 'callback_data': json.dumps({'id': vote_id, 'e': item})
             }
             reply_markup['inline_keyboard'][0].append(option_dict)
