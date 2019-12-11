@@ -3,7 +3,7 @@ import localDB
 import json
 from datetime import datetime
 from botSession import dra
-from tools import task_done
+from botTools import task_done
 
 dra_api = "https://dragalialost.com/api/index.php"
 
@@ -18,18 +18,6 @@ def get_news_data(lang="zh_cn", priority=None):
         "priority_lower_than": priority
     }
     return requests.get(dra_api, params=params).json()
-
-
-def get_sent_log(lang="zh_cn"):
-    try:
-        with open(f"dra/{lang}.json", "r") as file:
-            try:
-                sent = json.load(file)
-            except json.decoder.JSONDecodeError:
-                sent = False
-    except FileNotFoundError:
-        sent = False
-    return sent
 
 
 def format_news(raw, lang='zh_cn'):
@@ -49,7 +37,19 @@ def format_news(raw, lang='zh_cn'):
 
 
 def send_news(lang='zh_cn'):
-    sent = get_sent_log(lang)
+    dra_db = None
+    try:
+        with open(f"dra/dra.json", "r") as file:
+            try:
+                dra_db = json.load(file)
+                try:
+                    sent = dra_db[lang]
+                except KeyError:
+                    sent = False
+            except json.decoder.JSONDecodeError:
+                sent = False
+    except FileNotFoundError:
+        sent = False
 
     news_data = get_news_data(lang)
     news_list = news_data["data"]["category"]["contents"]
@@ -63,8 +63,10 @@ def send_news(lang='zh_cn'):
         else:
             not_found = True
             renew = 0
-            with open(f"dra/{lang}.json", "w") as file:
-                json.dump(news_list, file)
+
+            dra_db[lang] = news_list
+            with open(f"dra/dra.json", "w") as file:
+                json.dump(dra_db, file)
 
             while not_found:
                 for news in news_list:
@@ -90,12 +92,13 @@ def send_news(lang='zh_cn'):
             msg = format_news(news, lang)
             to_send.append(msg)
 
-        with open(f"dra/{lang}.json", "w") as file:
-            json.dump(news_list, file)
+        dra_db[lang] = news_list
+        with open(f"dra/dra.json", "w") as file:
+            json.dump(dra_db, file)
 
     if to_send:
         for item in reversed(to_send):
-            dra.send(localDB.chat[f'dra_{lang}']).message(item, parse='Markdown', no_preview=True)
+            dra.send_message(localDB.chat[f'dra_{lang}'], item, parse_mode='Markdown', disable_web_page_preview=True)
 
     return True
 

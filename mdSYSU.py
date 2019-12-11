@@ -1,7 +1,6 @@
-from checkConnect import check_con
 import mdWeather
 from botSession import kuma
-from tools import task_done
+from botTools import task_done
 import localDB
 import random
 import json
@@ -30,23 +29,6 @@ dow_cn = {
     6: '天',
 }
 
-urls = {
-    'google': 'https://www.google.com',
-    'tg': 'https://web.telegram.org/',
-    'zhwp': 'https://zh.wikipedia.org',
-    'enwp': 'https://en.wikipedia.org',
-    'fb': 'https://www.facebook.com',
-    'twi': 'https://twitter.com',
-    'ins': 'https://www.instagram.com'
-}
-
-
-def emoji(result):
-    return '✅' if result else '❌'
-
-
-# TASKS
-
 
 def send_greetings():
     forecast = mdWeather.check_forecast()
@@ -64,60 +46,7 @@ def send_greetings():
               f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n'\
               f'{random.choice(greet_msg)}，，，'
 
-    kuma.send(localDB.chat['sbddy']).text(grt_msg)
-    kuma.send(localDB.chat['sbddy']).sticker(random.choice(greet_sticker))
+    kuma.send_message(localDB.chat['sbddy'], grt_msg)
+    kuma.send_sticker(localDB.chat['sbddy'], random.choice(greet_sticker))
     task_done('greetings')
-    return True
-
-
-def send_con():
-    month, day, weekday = mdWeather.check_date()
-    res_g_4 = emoji(check_con(urls['google'], '4'))
-    g_6_status = check_con(urls['google'], '6')
-    res_g_6 = emoji(g_6_status)
-    enwp_status = check_con(urls['enwp'], '4') or check_con(urls['enwp'], '6')
-    res_enwp = emoji(enwp_status)
-    res_zhwp = emoji(check_con(urls['zhwp'], '4') or check_con(urls['zhwp'], '6'))
-    res_fb = emoji(check_con(urls['fb'], '4') or check_con(urls['fb'], '6'))
-    res_twi = emoji(check_con(urls['twi'], '4') or check_con(urls['twi'], '6'))
-    res_ins = emoji(check_con(urls['ins'], '4') or check_con(urls['ins'], '6'))
-    tg_status = check_con(urls['tg'])
-    res_tg = emoji(tg_status)
-    con_msg = f'中大校园网连通性报告\n' \
-              f'2019年{month}月{day}日\n\n' \
-              f'Google: v4 {res_g_4}  v6 {res_g_6}\n' \
-              f'Telegram: {res_tg}\n' \
-              f'Wikipedia: en {res_enwp}  zh {res_zhwp}\n' \
-              f'SNS: FB {res_fb}  Twi {res_twi}  ins {res_ins}'
-
-    try:
-        with open(f'connect.json', 'r') as file:
-            con_log = json.load(file)
-            if con_log['msg'] == [res_g_4, res_g_6, res_enwp, res_zhwp, res_fb, res_twi, res_ins, res_tg]:
-                same = True
-            else:
-                same = False
-    except FileNotFoundError:
-        same = False
-
-    if same:
-        same_msg = '今日的中大校园网连通性报告与上次一致。'
-        kuma.send(localDB.chat['sbddy']).message(same_msg, reply_to=con_log['msg_id'])
-        if con_log['sticker']:
-            kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
-    else:
-        sticker = False
-        result = kuma.send(localDB.chat['sbddy']).message(con_msg)
-        if not tg_status or not g_6_status or not enwp_status:
-            sticker = True
-            kuma.send(localDB.chat['sbddy']).sticker('CAADBQADEgADpc1iJrCMCke01ilSFgQ')
-        new_log = {
-            'msg_id': kuma.get(result).message('id'),
-            'msg': [res_g_4, res_g_6, res_enwp, res_zhwp, res_fb, res_twi, res_ins, res_tg],
-            'sticker': sticker
-        }
-        with open(f'connect.json', 'w') as file:
-            json.dump(new_log, file)
-
-    task_done('net con')
     return True

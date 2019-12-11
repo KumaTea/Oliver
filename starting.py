@@ -1,10 +1,9 @@
 import os
 import taskManager
-from tgapi.tools import set_proxy
 
 
 available_tasks = [
-    'send_greetings', 'send_con',
+    'send_greetings',
     'task_check', 'sync_posts', 'send_post',
     'send_news_all',
     'do_backup'
@@ -44,8 +43,5 @@ def starting_tasks(filename='start_tasks.txt'):
 
 
 def starting():
-    mkdir()
-    if 'nt' in os.name:
-        set_proxy()
     starting_tasks()
-    print('Starting fine.')
+    print('[info] Starting fine.')

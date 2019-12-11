@@ -1,12 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
-from tgapi import tools
 import json
 import re
 import pickle
 import localDB
 from botSession import dra
-from tools import task_done
+from botTools import task_done, read_file
 from voteGenerator import create_vote
 
 
@@ -61,7 +60,7 @@ def init_ret_posts():
     posts_db = {}
     posts_len = 1
     params = {
-        'api_key': tools.read_file('token_tum', True),
+        'api_key': read_file('token_tum', True),
         'before': None
     }
     index = requests.get(tum_api, params=params).json()['response']['total_posts']
@@ -109,7 +108,7 @@ def sync_posts():
 
     if need_sync:
         params = {
-            'api_key': tools.read_file('token_tum', True),
+            'api_key': read_file('token_tum', True),
             'before': None
         }
         tum_posts = requests.get(tum_api, params=params).json()['response']
@@ -190,9 +189,9 @@ def send_post():
             sending = tum_db['posts'][to_send]['photo']
         for item in sending:
             if item.endswith('gif'):
-                dra.send(localDB.chat['st']).gif(item)
+                dra.send_animation(localDB.chat['st'], item)
             else:
-                dra.send(localDB.chat['st']).photo(item)
+                dra.send_photo(localDB.chat['st'], item)
 
         post_desc = desc_format(tum_db['posts'][to_send]['summary'])
         post_link = tum_db['posts'][to_send]['link']

@@ -1,4 +1,4 @@
-tgapi
+python-telegram-bot
 apscheduler
 requests
 beautifulsoup4

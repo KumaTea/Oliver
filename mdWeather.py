@@ -1,10 +1,10 @@
 import requests
-from tgapi import tools
+from botTools import read_file
 from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-weather_token = tools.read_file('token_weather', 'base64')
+weather_token = read_file('token_weather', 'base64')
 current_api = 'https://api.openweathermap.org/data/2.5/weather'
 forecast_api = 'http://flash.weather.com.cn/wmaps/xml/guangdong.xml'
 lunar_api = 'https://www.sojson.com/open/api/lunar/json.shtml'
@@ -96,5 +96,4 @@ def check_event_int():
                 return f'距离{events[item]}还有{interval}天。'
             else:
                 return f'距离{events[item][0]}还有{interval}天。'
-        else:
-            return ''
+    return ''
