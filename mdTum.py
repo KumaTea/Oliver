@@ -202,7 +202,7 @@ def send_post():
               f'Description: {post_desc}\n' \
               f'{tag}Link: [click me]({post_link})'
         vote_id, vote_markup = create_vote(['😍', '👍', '👎'])
-        dra.send(localDB.chat['st']).message(msg, parse='Markdown', no_preview=True, reply_markup=vote_markup)
+        dra.send_message(localDB.chat['st'], msg, 'Markdown', True, reply_markup=vote_markup)
 
         tum_db['info']['sent'] = to_send
         tum_db['posts'][to_send]['vote'] = vote_id

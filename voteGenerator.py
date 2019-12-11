@@ -38,25 +38,25 @@ def create_vote(options, output='all'):
         return vote_id, gen_reply_markup(vote_id, options, True)
 
 
-def gen_reply_markup(vote_id, options=None, new=False):
+def gen_reply_markup(vote_id, options=None, new=False, vote_json=None):
     inline_keyboard = [[]]
     if new:
         for item in options:
             button = InlineKeyboardButton(item, callback_data=json.dumps({'id': vote_id, 'e': item}))
             inline_keyboard[0].append(button)
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
-        return reply_markup
     else:
-        with open('../vote/vote.json', 'r') as file:
-            vote_data = json.load(file)
-        vote_json = vote_data[vote_id]
+        if not vote_json:
+            with open('../vote/vote.json', 'r') as file:
+                vote_data = json.load(file)
+            vote_json = vote_data[vote_id]
         options = vote_json['info']['options']
         for item in options:
             button = InlineKeyboardButton(item + choice_count(len(vote_json['options'][item])),
                                           callback_data=json.dumps({'id': vote_id, 'e': item}))
             inline_keyboard[0].append(button)
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
-        return reply_markup
+    return reply_markup
 
 
 def choice_count(count):
