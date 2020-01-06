@@ -3,7 +3,6 @@ from botSession import kuma
 from botTools import task_done
 import localDB
 import random
-import json
 
 SYSU = ['中山大学', '中大', '中带', '双鸭山', '鸭大', '鸭鸭山', '双倍多多鸭', ]
 student = ['学生', '学子', '大佬', '带佬', '高雅人士', '大手子', ]
@@ -31,19 +30,12 @@ dow_cn = {
 
 
 def send_greetings():
-    forecast = mdWeather.check_forecast()
-    g_temp, g_temp_max, g_weather_desc = forecast['g']
-    z_temp, z_temp_max, z_weather_desc = forecast['z']
-    s_temp, s_temp_max, s_weather_desc = forecast['s']
 
     month, day, weekday = mdWeather.check_date()
     lunar_month, lunar_day, lunar_term = mdWeather.check_lunar()
     event = mdWeather.check_event_int()
     grt_msg = f'各位{random.choice(SYSU)}的{random.choice(student)}早上好！' \
-              f'今天是{month}月{day}日星期{dow_cn[weekday]}，农历{lunar_month}月{lunar_day}{lunar_term}。{event}\n' \
-              f'广州{g_weather_desc}，{g_temp}~{g_temp_max}度；' \
-              f'珠海{z_weather_desc}，{z_temp}~{z_temp_max}度；' \
-              f'深圳{s_weather_desc}，{s_temp}~{s_temp_max}度。\n\n'\
+              f'今天是{month}月{day}日星期{dow_cn[weekday]}，农历{lunar_month}月{lunar_day}{lunar_term}。{event}\n\n' \
               f'{random.choice(greet_msg)}，，，'
 
     kuma.send_message(localDB.chat['sbddy'], grt_msg)

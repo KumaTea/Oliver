@@ -37,7 +37,7 @@ def format_news(raw, lang='zh_cn'):
 
 
 def send_news(lang='zh_cn'):
-    dra_db = None
+    dra_db = {}
     try:
         with open(f"dra/dra.json", "r") as file:
             try:

@@ -92,11 +92,13 @@ def init_ret_posts():
 
 def sync_posts():
     need_sync = True
+    db_changed = False
     try:
         with open('tum/posts.p', 'rb') as file:
             tum_db = pickle.load(file)
     except FileNotFoundError:
         need_sync = False
+        db_changed = True
         tum_posts = init_ret_posts()
         tum_db = {
             'info': {
@@ -115,6 +117,7 @@ def sync_posts():
         current_count = tum_db['info']['total']
         latest_count = tum_posts['total_posts']
         if current_count < latest_count:
+            db_changed = True
             index = latest_count
             for i in range(latest_count - current_count):
                 if tum_posts['posts'][i]['type'] == 'photo':
@@ -130,15 +133,18 @@ def sync_posts():
 
         tum_db['info']['total'] = latest_count
 
-    tum_db['posts'] = dict(sorted(tum_db['posts'].items()))
+    if db_changed:
+        tum_db['posts'] = dict(sorted(tum_db['posts'].items()))
 
-    with open('tum/posts.p', 'wb') as file:
-        pickle.dump(tum_db, file, protocol=4)
-    with open('tum/posts.json', 'w') as file:
-        json.dump(tum_db, file)
+        with open('tum/posts.p', 'wb') as file:
+            pickle.dump(tum_db, file, protocol=4)
+        with open('tum/posts.json', 'w') as file:
+            json.dump(tum_db, file)
 
-    task_done('sync')
-    return True
+        task_done('sync')
+        return True
+    else:
+        return None
 
 
 def desc_format(desc):

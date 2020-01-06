@@ -10,6 +10,6 @@ def do_backup():
         kuma.send_document(localDB.chat['me'], f)
     with open('tum/posts.p', 'rb') as f:
         kuma.send_document(localDB.chat['me'], f)
-    kuma.send(localDB.chat['me']).message(f'Backup files on {year}-{month}-{date}')
+    kuma.send_message(localDB.chat['me'], f'Backup files on {year}-{month}-{date}')
     task_done('backup')
     return True
