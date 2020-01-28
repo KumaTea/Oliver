@@ -17,7 +17,7 @@ def manager():
     # scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
 
     # mdTum
-    scheduler.add_job(sync_posts, 'cron', hour='6,12')
+    scheduler.add_job(sync_posts, 'cron', hour='6,18')
     scheduler.add_job(send_post, 'cron', hour='1,7,13,19')
 
     # mdDra

@@ -1,12 +1,14 @@
-import requests
-from bs4 import BeautifulSoup
-import json
 import re
+import json
+import time
 import pickle
 import localDB
+import requests
 from botSession import dra
-from botTools import task_done, read_file
+from bs4 import BeautifulSoup
+from telegram.error import TimedOut
 from voteGenerator import create_vote
+from botTools import task_done, read_file
 
 
 blog = 'oudoubleyang.tumblr.com'
@@ -194,10 +196,13 @@ def send_post():
         else:
             sending = tum_db['posts'][to_send]['photo']
         for item in sending:
-            if item.endswith('gif'):
-                dra.send_animation(localDB.chat['st'], item)
-            else:
-                dra.send_photo(localDB.chat['st'], item)
+            try:
+                if item.endswith('gif'):
+                    dra.send_animation(localDB.chat['st'], item, timeout=60)
+                else:
+                    dra.send_photo(localDB.chat['st'], item, timeout=60)
+            except TimedOut:
+                time.sleep(10)
 
         post_desc = desc_format(tum_db['posts'][to_send]['summary'])
         post_link = tum_db['posts'][to_send]['link']
