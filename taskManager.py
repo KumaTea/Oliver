@@ -1,5 +1,4 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from mdSYSU import send_greetings
 from mdTum import sync_posts, send_post
 from mdDra import send_news_all
 from mdHostCmd import do_backup
@@ -9,13 +8,6 @@ scheduler = BlockingScheduler(misfire_grace_time=60)
 
 
 def manager():
-    # mdSYSU
-    scheduler.add_job(send_greetings, 'cron', hour=7, minute=30)
-    # scheduler.add_job(send_con, 'cron', hour=8, minute=30)
-
-    # checkUrl
-    # scheduler.add_job(check_url, 'cron', hour='*/4', minute=15)
-
     # mdTum
     scheduler.add_job(sync_posts, 'cron', hour='6,18')
     scheduler.add_job(send_post, 'cron', hour='1,7,13,19')
