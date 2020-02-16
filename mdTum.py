@@ -6,6 +6,7 @@ import localDB
 import requests
 from botSession import dra
 from bs4 import BeautifulSoup
+from datetime import datetime
 from telegram.error import TimedOut
 from voteGenerator import create_vote
 from botTools import task_done, read_file
@@ -172,6 +173,25 @@ def desc_format(desc):
     return fm_url
 
 
+def skip_sending(sent, total, schedule=None, base=25):
+    if schedule is None:
+        schedule = [1, 7, 13, 19]
+    now = int(datetime.now().strftime('%H'))
+    diff = total - sent
+
+    if now in schedule:
+        if diff < base:
+            return False if now == schedule[0] else True
+        elif diff < base * 2:
+            return False if now == schedule[:2] else True
+        elif diff < base * 3:
+            return False if now == schedule[:3] else True
+        else:
+            return False
+    else:
+        return False
+
+
 def send_post():
     try:
         with open('tum/posts.p', 'rb') as file:
@@ -182,6 +202,8 @@ def send_post():
             tum_db = pickle.load(file)
 
     if not tum_db['info']['sent'] == tum_db['info']['total']:
+        if skip_sending(tum_db['info']['sent'], tum_db['info']['total']):
+            return 'Skipped'
         to_send = tum_db['info']['sent'] + 1
         skip = True
         while skip:

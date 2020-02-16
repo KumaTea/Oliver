@@ -98,9 +98,10 @@ def send_news(lang='zh_cn'):
 
     if to_send:
         for item in reversed(to_send):
-            dra.send_message(localDB.chat[f'dra_{lang}'], item, parse_mode='Markdown', disable_web_page_preview=True)
-
-    return True
+            return dra.send_message(
+                localDB.chat[f'dra_{lang}'], item, parse_mode='Markdown', disable_web_page_preview=True)
+    else:
+        return dra.send_message(-1001157490282, '感觉真安静啊')
 
 
 def send_news_all():
