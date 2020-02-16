@@ -101,7 +101,10 @@ def send_news(lang='zh_cn'):
             return dra.send_message(
                 localDB.chat[f'dra_{lang}'], item, parse_mode='Markdown', disable_web_page_preview=True)
     else:
-        return dra.send_message(-1001157490282, '感觉真安静啊')
+        if lang == 'zh_cn' and int(datetime.now().strftime('%H')) == 14:
+            return dra.send_message(-1001157490282, '感觉真安静啊')
+        else:
+            return True
 
 
 def send_news_all():
