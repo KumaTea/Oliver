@@ -183,9 +183,9 @@ def skip_sending(sent, total, schedule=None, base=25):
         if diff < base:
             return False if now == schedule[0] else True
         elif diff < base * 2:
-            return False if now == schedule[:2] else True
+            return False if now in schedule[:2] else True
         elif diff < base * 3:
-            return False if now == schedule[:3] else True
+            return False if now in schedule[:3] else True
         else:
             return False
     else:

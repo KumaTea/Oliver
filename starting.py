@@ -3,9 +3,8 @@ import taskManager
 
 
 available_tasks = [
-    'send_greetings',
     'sync_posts', 'send_post',
-    'send_news_all',
+    'send_news',
     'do_backup'
 ]
 
