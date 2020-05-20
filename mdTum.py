@@ -223,7 +223,7 @@ def send_post():
                     dra.send_animation(localDB.chat['st'], item, timeout=60)
                 else:
                     dra.send_photo(localDB.chat['st'], item, timeout=60)
-            except TimedOut:
+            except:
                 time.sleep(10)
 
         post_desc = desc_format(tum_db['posts'][to_send]['summary'])
