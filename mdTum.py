@@ -12,7 +12,7 @@ from voteGenerator import create_vote
 from botTools import task_done, read_file
 
 
-blog = 'oudoubleyang.tumblr.com'
+blog = 'shotacol.tumblr.com'
 tum_api = f'https://api.tumblr.com/v2/blog/{blog}/posts'
 
 
