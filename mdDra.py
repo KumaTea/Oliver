@@ -97,9 +97,12 @@ def send_news(lang='zh_cn'):
             json.dump(dra_db, file)
 
     if to_send:
+        """
         for item in reversed(to_send):
             return dra.send_message(
                 localDB.chat[f'dra_{lang}'], item, parse_mode='Markdown', disable_web_page_preview=True)
+        """
+        pass
     else:
         if lang == 'zh_cn' and int(datetime.now().strftime('%H')) == 14:
             return dra.send_message(-1001157490282, '感觉真安静啊')
@@ -109,5 +112,5 @@ def send_news(lang='zh_cn'):
 
 def send_news_all():
     send_news()
-    send_news("en_us")
+    # send_news("en_us")
     task_done("send dra news")

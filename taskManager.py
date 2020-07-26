@@ -1,7 +1,7 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
-from mdTum import sync_posts, send_post
 from mdDra import send_news
 from mdHostCmd import do_backup
+from mdTum import sync_posts, send_post
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 scheduler = BlockingScheduler(misfire_grace_time=60)
