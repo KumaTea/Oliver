@@ -1,4 +1,3 @@
-import re
 import json
 import time
 import pickle
@@ -7,9 +6,9 @@ import requests
 from botSession import dra
 from bs4 import BeautifulSoup
 from datetime import datetime
-from telegram.error import TimedOut
 from voteGenerator import create_vote
 from botTools import task_done, read_file
+from telegram.utils.helpers import escape_markdown
 
 
 blog = 'shotacol.tumblr.com'
@@ -150,29 +149,6 @@ def sync_posts():
         return None
 
 
-def desc_format(desc):
-    re_url = re.sub(
-        'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'[\g<0>]', desc)
-    in_url = False
-    esc_desc = ''
-    for i in re_url:
-        if i == '[':
-            in_url = True
-            esc_desc += i
-        elif i == ']':
-            in_url = False
-            esc_desc += i
-        elif i == '_' or i == '*':
-            if in_url:
-                esc_desc += i
-            else:
-                esc_desc += f'\\{i}'
-        else:
-            esc_desc += i
-    fm_url = (lambda p: p if p else None)(esc_desc.replace('([', '(').replace(')]', ')'))
-    return fm_url
-
-
 def skip_sending(sent, total, schedule=None, base=25):
     if schedule is None:
         schedule = [1, 7, 13, 19]
@@ -226,7 +202,7 @@ def send_post():
             except:
                 time.sleep(10)
 
-        post_desc = desc_format(tum_db['posts'][to_send]['summary'])
+        post_desc = tum_db['posts'][to_send]['summary']
         post_link = tum_db['posts'][to_send]['link']
         tag = ''
         if 'NSFW' in tum_db['posts'][to_send]['tags']:
@@ -235,7 +211,7 @@ def send_post():
               f'Description: {post_desc}\n' \
               f'{tag}Link: [click me]({post_link})'
         vote_id, vote_markup = create_vote(['😍', '👍', '👎'])
-        dra.send_message(localDB.chat['st'], msg, 'Markdown', True, reply_markup=vote_markup)
+        dra.send_message(localDB.chat['st'], escape_markdown(msg), 'Markdown', True, reply_markup=vote_markup)
 
         tum_db['info']['sent'] = to_send
         tum_db['posts'][to_send]['vote'] = vote_id

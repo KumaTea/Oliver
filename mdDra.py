@@ -52,7 +52,7 @@ def send_news(lang='zh_cn'):
         sent = False
 
     news_data = get_news_data(lang)
-    news_list = news_data["data"]["category"]["contents"]
+    news_list = news_data.copy()["data"]["category"]["contents"]
 
     to_send = []
 
