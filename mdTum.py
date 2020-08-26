@@ -116,12 +116,17 @@ def sync_posts():
             'before': None
         }
         tum_posts = requests.get(tum_api, params=params).json()['response']
-        current_count = tum_db['info']['total']
-        latest_count = tum_posts['total_posts']
-        if current_count < latest_count:
+        local_count = tum_db['info']['total']
+        local_latest = tum_db['posts'][local_count]['id']
+        online_count = tum_posts['total_posts']
+        online_latest = tum_posts['posts'][0]['id']
+        if local_latest < online_latest:
             db_changed = True
-            index = latest_count
-            for i in range(latest_count - current_count):
+            new_count = 0
+            while not tum_posts['posts'][new_count]['id'] == local_latest:
+                new_count += 1
+            for i in range(new_count):
+                index = local_count+new_count-i
                 if tum_posts['posts'][i]['type'] == 'photo':
                     tum_db['posts'][index] = process_photo(tum_posts['posts'][i], index)
                     print('  Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
@@ -129,11 +134,10 @@ def sync_posts():
                     tum_db['posts'][index] = process_text(tum_posts['posts'][i], index)
                     print('  Processed: ', tum_posts['posts'][i]['id'], ' at ', tum_posts['posts'][i]['date'])
                 else:
-                    tum_db['posts'][index] = json.dumps(tum_posts['posts'][i])
+                    tum_db['posts'][index] = tum_posts['posts'][i]
                     print('  Unknown type: ', tum_posts['posts'][i]['type'], '\n', json.dumps(tum_posts['posts'][i]))
-                index -= 1
 
-        tum_db['info']['total'] = latest_count
+        tum_db['info']['total'] = len(tum_db['posts'])
 
     if db_changed:
         tum_db['posts'] = dict(sorted(tum_db['posts'].items()))
