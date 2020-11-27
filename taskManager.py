@@ -9,10 +9,10 @@ scheduler = BlockingScheduler(misfire_grace_time=60)
 
 def manager():
     # mdTum
-    scheduler.add_job(sync_posts, 'cron', hour='6,18')
+    scheduler.add_job(sync_posts, 'cron', hour='0,6,12,18')
     scheduler.add_job(send_post, 'cron', hour='1,7,13,19')
 
     # mdDra
-    scheduler.add_job(send_news, 'cron', hour='2,8,13,14,15,20', minute=1)
+    scheduler.add_job(send_news, 'cron', hour='14', minute=1)
     # mdHostCommands
     scheduler.add_job(do_backup, 'cron', day_of_week='sat', hour=2)

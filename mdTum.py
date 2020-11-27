@@ -1,7 +1,6 @@
 import json
 import time
 import pickle
-import localDB
 import requests
 from botSession import dra
 from bs4 import BeautifulSoup
@@ -9,9 +8,12 @@ from datetime import datetime
 from voteGenerator import create_vote
 from botTools import task_done, read_file
 from telegram.utils.helpers import escape_markdown
+try:
+    from localDB import chat, blog
+except ImportError:
+    chat = {}
+    blog = 'example.tumblr.com'
 
-
-blog = 'shotacol.tumblr.com'
 tum_api = f'https://api.tumblr.com/v2/blog/{blog}/posts'
 
 
@@ -200,9 +202,9 @@ def send_post():
         for item in sending:
             try:
                 if item.endswith('gif'):
-                    dra.send_animation(localDB.chat['st'], item, timeout=60)
+                    dra.send_animation(chat['st'], item, timeout=60)
                 else:
-                    dra.send_photo(localDB.chat['st'], item, timeout=60)
+                    dra.send_photo(chat['st'], item, timeout=60)
             except:
                 time.sleep(10)
 
@@ -215,7 +217,7 @@ def send_post():
               f'Description: {escape_markdown(post_desc)}\n' \
               f'{tag}Link: [click me]({post_link})'
         vote_id, vote_markup = create_vote(['😍', '👍', '👎'])
-        dra.send_message(localDB.chat['st'], msg, 'Markdown', True, reply_markup=vote_markup)
+        dra.send_message(chat['st'], msg, 'Markdown', True, reply_markup=vote_markup)
 
         tum_db['info']['sent'] = to_send
         tum_db['posts'][to_send]['vote'] = vote_id
