@@ -2,13 +2,6 @@ import os
 import taskManager
 
 
-available_tasks = [
-    'sync_posts', 'send_post',
-    'send_news',
-    'do_backup'
-]
-
-
 def mkdir(folder=None):
     if not os.path.exists('tum'):
         os.mkdir('tum')
@@ -31,7 +24,7 @@ def starting_tasks(filename='start_tasks.txt'):
     with open(filename, 'r') as f:
         tasks = f.read().split('\n')
     for item in tasks:
-        if item in available_tasks:
+        if item in taskManager.available_tasks:
             getattr(taskManager, item)()
         else:
             if not item == '':

@@ -1,10 +1,16 @@
 from mdDra import send_news
 from mdHostCmd import do_backup
 from mdTum import sync_posts, send_post
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
-scheduler = BlockingScheduler(misfire_grace_time=60)
+scheduler = BackgroundScheduler(misfire_grace_time=60)
+
+available_tasks = [
+    'sync_posts', 'send_post',
+    'send_news',
+    'do_backup'
+]
 
 
 def manager():

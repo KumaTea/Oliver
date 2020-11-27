@@ -1,5 +1,6 @@
-python-telegram-bot
-apscheduler
-requests
-beautifulsoup4
 lxml
+flask
+requests
+apscheduler
+beautifulsoup4
+python-telegram-bot
