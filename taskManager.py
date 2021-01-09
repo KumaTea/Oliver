@@ -1,5 +1,4 @@
 from mdDra import send_news
-from mdHostCmd import do_backup
 from mdTum import sync_posts, send_post
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -20,5 +19,3 @@ def manager():
 
     # mdDra
     scheduler.add_job(send_news, 'cron', hour='14', minute=1)
-    # mdHostCommands
-    scheduler.add_job(do_backup, 'cron', day_of_week='sat', hour=2)

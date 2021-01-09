@@ -13,7 +13,6 @@ app = Flask(__name__)
 @app.route('/trigger', methods=['POST'])
 def trigger():
     data = flask_req.form
-    print(data)
     if 'command' in data and 'token' in data:
         command = data['command']
         token = data['token']

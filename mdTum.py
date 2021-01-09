@@ -120,7 +120,7 @@ def sync_posts():
         tum_posts = requests.get(tum_api, params=params).json()['response']
         local_count = tum_db['info']['total']
         local_latest = tum_db['posts'][local_count]['id']
-        online_count = tum_posts['total_posts']
+        # online_count = tum_posts['total_posts']
         online_latest = tum_posts['posts'][0]['id']
         if local_latest < online_latest:
             db_changed = True
