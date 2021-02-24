@@ -120,12 +120,13 @@ def sync_posts():
         tum_posts = requests.get(tum_api, params=params).json()['response']
         local_count = tum_db['info']['total']
         local_latest = tum_db['posts'][local_count]['id']
+        local_latest_3_ids = [tum_db['posts'][local_count]['id'], [tum_db['posts'][local_count-1]['id'], [tum_db['posts'][local_count-2]['id']]
         # online_count = tum_posts['total_posts']
         online_latest = tum_posts['posts'][0]['id']
         if local_latest < online_latest:
             db_changed = True
             new_count = 0
-            while not tum_posts['posts'][new_count]['id'] == local_latest:
+            while not tum_posts['posts'][new_count]['id'] in local_latest_3_ids:
                 new_count += 1
             for i in range(new_count):
                 index = local_count+new_count-i
